@@ -1,0 +1,7 @@
+com.ionic.keyboard 1.0.4 "Keyboard"
+cordova-plugin-console 1.0.0 "Console"
+cordova-plugin-device 1.0.0 "Device"
+cordova-plugin-file 2.0.0 "File"
+cordova-plugin-file-transfer 1.0.0 "File Transfer"
+cordova-plugin-whitelist 1.0.1-dev "Whitelist"
+
