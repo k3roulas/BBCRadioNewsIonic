@@ -20,6 +20,7 @@ app.run(function($ionicPlatform) {
 
 //    alert(cordova.file.applicationDirectory);
 
+
   });
 });
 
@@ -76,10 +77,10 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 //    }
 
     var permanentStorage = window.localStorage;
-//    permanentStorage.setItem('news', '');
+    permanentStorage.setItem('news', '');
 
     var encodedNews = permanentStorage.getItem('news');
-    if (typeof encodedNews != 'undefined' && encodedNews.length != 0)
+    if (typeof encodedNews != 'undefined' && encodedNews != null && encodedNews.length != 0)
         if ( encodedNews !== 'undefined') {
             $scope.newsList = JSON.parse(encodedNews);
     }
@@ -227,6 +228,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
 
     $scope.play = function(url) {
+        console.log(url);
         $scope.playerStatus = 'play';
         $scope.onAirUrl = url;
         if ($scope.player != null) {

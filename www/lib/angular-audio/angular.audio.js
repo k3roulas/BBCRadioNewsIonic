@@ -299,6 +299,7 @@ angular.module('ngAudio', [])
                             audioObject.loop--;
                             // if (!$looping) return;
                         }
+                        console.log(audioObject);
                         audioObject.setCurrentTime(0);
                         audioObject.play();
 
