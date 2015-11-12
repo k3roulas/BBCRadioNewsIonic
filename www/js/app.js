@@ -79,6 +79,8 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     var permanentStorage = window.localStorage;
     permanentStorage.setItem('news', '');
 
+    console.log(permanentStorage);
+
     var encodedNews = permanentStorage.getItem('news');
     if (typeof encodedNews != 'undefined' && encodedNews != null && encodedNews.length != 0)
         if ( encodedNews !== 'undefined') {
@@ -110,13 +112,43 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
 //    permanentStorage.setItem('news', "");
 
+
+
+
+    var fs = CordovaPromiseFS({
+      persistent: true, // or false
+      storageSize: 20*1024*1024, // storage size in bytes, default 20MB
+      concurrency: 3, // how many concurrent uploads/downloads?
+      Promise: $q // Your favorite Promise/A+ library!
+    });
+
+
+    $scope.createFile = function() {
+        fs.write("fuck.txt", "what the fuck").then(
+            function() {console.log('success'); },
+            function() {console.log('error'); }
+        );
+    }
+
+    $scope.readFile = function() {
+        fs.read("fuck.txt").then(
+            function(e) {console.log('success');console.log(e); },
+            function() {console.log('error'); }
+        );
+    }
+
     $scope.refresh = function()
     {
 
+        console.log('refresh');
+
         var rssFlow = [
-            'http://downloads.bbc.co.uk/podcasts/radio4/r4six/rss.xml', // The six o'clock
-            'http://downloads.bbc.co.uk/podcasts/radio4/wtonight/rss.xml', // The world tonight
-            'http://downloads.bbc.co.uk/podcasts/radio4/wato/rss.xml' // World at one
+            '/programmes/b006qjxt/episodes/downloads.rss', // The six o'clock
+//            '/programmes/b006qtl3/episodes/downloads.rss', // The world tonight
+//            '/programmes/b006qptc/episodes/downloads.rss' // World at one
+//            'http://www.bbc.co.uk/programmes/b006qjxt/episodes/downloads.rss', // The six o'clock
+//            'http://www.bbc.co.uk/programmes/b006qtl3/episodes/downloads.rss', // The world tonight
+//            'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss' // World at one
         ];
 
         var newsList = [];
@@ -174,7 +206,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
                 var permanentStorage = window.localStorage;
                 permanentStorage.setItem('news', JSON.stringify($scope.newsList));
 
-                $scope.newsList = newsList;
+                $scope.newsList = newList;
             }
 
 
@@ -185,6 +217,8 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
     $scope.plnProgress = 'no';
     $scope.download = function () {
+
+
 
         // Todo check free space -> alert($cordovaFile.getFreeDiskSpace());
 
@@ -202,6 +236,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
         var theNews = this.news;
         theNews.progress = 'start';
+
         $cordovaFileTransfer.download(this.news.url, filePath, options, trustHosts)
             .then(
                 function(result) {

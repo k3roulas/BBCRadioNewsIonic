@@ -21,6 +21,7 @@
     <script src="lib/x2js/xml2json.min.js"></script>
     <script src="lib/angular-xml/angular-xml.min.js"></script>
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="lib/cordova-promise-fs/dist/CordovaPromiseFS.js"></script>
 
       <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -34,8 +35,9 @@
 
     <ion-pane>
       <ion-header-bar class="bar-stable">
-        <h1 class="title">BBBC Radio 4 News <button ng-click="refresh()">Refresh</button> {{plnProgress}}</h1>
+        <h1 class="title">BBBC Radio 4 News <button ng-click="refresh()">Refresh</button> <button ng-click="createFile()">createFile</button><button ng-click="readFile()">readFile</button> {{plnProgress}}</h1>
       </ion-header-bar>
+
         <ion-header-bar class="bar-subheader">
             <div class="row">
                 <button class="button col-50" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>
@@ -60,7 +62,7 @@
                   <div>{{news.progress}}</div>
                   <!--<span class="icon ion-ios-arrow-thin-down" style="font-size: 32px"></span>-->
 
-                  {{news.theDate | date:'EEEE h:mm'}}
+                  this is the date : {{news.theDate | date:'EEEE h:mm'}}
 
                   <!--<span class="ion-music-note" style="font-size: 32px"></span>-->
 

@@ -1,0 +1,14 @@
+
+Version 1 : no storage
+Need a connection to display
+
+Version 2 : allow selection of podcast from BBC per radio
+save localy the configuration
+
+Version 3 : allow downloading
+investigate : local storage + progress bar
+
+Version 3 : allow wifi auto downloading 
+the app will wake up or will never sleep
+
+
