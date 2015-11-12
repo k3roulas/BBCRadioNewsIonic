@@ -35,7 +35,7 @@
 
     <ion-pane>
       <ion-header-bar class="bar-stable">
-        <h1 class="title">BBBC Radio 4 News <button ng-click="refresh()">Refresh</button> <button ng-click="createFile()">createFile</button><button ng-click="readFile()">readFile</button> {{plnProgress}}</h1>
+        <h1 class="title">BBC Radio 4 News <button ng-click="refresh()">Refresh</button></h1>
       </ion-header-bar>
 
         <ion-header-bar class="bar-subheader">
@@ -55,18 +55,10 @@
               <ion-item ng-repeat="news in newsList track by $index" >
 
                   <div ng-show="isOnAir(news)">On Air</div>
-
-                  <button class="" ng-click="download()">
-                      <i class="ion-ios-arrow-thin-down" ></i>
-                  </button>
-                  <div>{{news.progress}}</div>
-                  <!--<span class="icon ion-ios-arrow-thin-down" style="font-size: 32px"></span>-->
-
-                  this is the date : {{news.theDate | date:'EEEE h:mm'}}
-
-                  <!--<span class="ion-music-note" style="font-size: 32px"></span>-->
-
-
+                  <!--{{news.theDate | date:'medium'}}-->
+                  <!--{{news.theDate | date:'EEEE h:mm'}} --->
+                  {{news.theDate | date:'EEEE'}} -
+                  {{news.rssLabel}}
 
 
                   <button class="" ng-click="play('{{news.url}}')">
