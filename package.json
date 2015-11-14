@@ -18,9 +18,18 @@
     "com.ionic.keyboard",
     "cordova-plugin-console",
     "cordova-plugin-device",
-    "cordova-plugin-whitelist"
+    "cordova-plugin-whitelist",
+    "cordova-plugin-file",
+    "cordova-plugin-media",
+    {
+      "locator": "https://github.com/apache/cordova-plugin-file-transfer.git",
+      "id": "cordova-plugin-file-transfer"
+    }
   ],
   "cordovaPlatforms": [
-    "android"
+    {
+      "platform": "android",
+      "locator": "browser"
+    }
   ]
 }
