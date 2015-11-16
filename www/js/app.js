@@ -33,13 +33,27 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     $scope.newsList = [];
 
 
+//    {
+//        "name": "BBCRadioNewsIonic",
+//        "app_id": "",
+//        "proxies": [
+//        {
+//            "path": "/programmes",
+//            "proxyUrl": "http://www.bbc.co.uk/programmes"
+//        }
+//    ]
+//    }
+
+
     $scope.refresh = function()
     {
         var rssFlow = [
-            // The six o'clock
-            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
-            { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
-            { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
+//            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
+//            { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
+//            { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
+            { url : 'http://www.bbc.co.uk/programmes/b006qjxt/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
+            { url : 'http://www.bbc.co.uk/programmes/b006qtl3/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
+            { url : 'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
         ];
 
 

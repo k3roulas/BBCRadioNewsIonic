@@ -8,7 +8,7 @@ save localy the configuration
 Version 3 : allow downloading
 investigate : local storage + progress bar
 
-Version 3 : allow wifi auto downloading 
+Version 4 : allow wifi auto downloading 
 the app will wake up or will never sleep
 
 
