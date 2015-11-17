@@ -22,6 +22,21 @@ app.run(function($ionicPlatform) {
 });
 
 
+app.config(
+    function($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise('/')
+
+        $stateProvider.state('home', {
+            url: '/',
+            templateUrl: 'home.html'
+        })
+        $stateProvider.state('config', {
+            url: '/config',
+            templateUrl: 'config.html'
+        })
+})
+
+
 app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.errorPln = false;
