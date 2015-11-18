@@ -22,6 +22,42 @@ app.run(function($ionicPlatform) {
 });
 
 
+app.config(
+    function($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise('/')
+
+        $stateProvider.state('home', {
+            url: '/',
+            templateUrl: 'home.html'
+        })
+        $stateProvider.state('config', {
+            url: '/config',
+            templateUrl: 'config.html'
+        })
+})
+
+
+
+var defaultConfig =  {
+    podcasts : [
+        {
+            source : 'BBC Radio 4',
+            rssFlows : [
+                { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124, enabled: true },
+                { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118, enabled: true },
+                { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113, enabled: true },
+            ]
+        },
+        {
+            source : 'Global News Podcast',
+            rssFlows : [
+                { url : '/programmes/p02nq0gn/episodes/downloads.rss', label: "Global News Podcast", dayWeight: 105, enabled: true },
+            ]
+        }
+        ]
+}
+
+
 app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.errorPln = false;
@@ -31,6 +67,26 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     $scope.playerStatus = 'stop';
 
     $scope.newsList = [];
+
+
+    // TODO : encapsulate that
+    var storage = window.localStorage;
+    var storedConfig =  storage.getItem('config');
+
+    if (storedConfig !== null) {
+        $scope.config = JSON.parse(storedConfig);
+    } else {
+        $scope.config = defaultConfig;
+    }
+
+    $scope.config = defaultConfig;
+
+
+    $scope.$watch('config', function(newVal, oldVal){
+        if (newVal !== 'undefined') {
+            storage.setItem('config', JSON.stringify(newVal));
+        }
+    }, true);
 
 
 //    {
@@ -47,67 +103,82 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
     $scope.refresh = function()
     {
-        var rssFlow = [
-            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
-            { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
-            { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
+//        var rssFlow = [
+//            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
+//            { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
+//            { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
 //            { url : 'http://www.bbc.co.uk/programmes/b006qjxt/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
 //            { url : 'http://www.bbc.co.uk/programmes/b006qtl3/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
 //            { url : 'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
-        ];
-
-
-//        var rssFlow = [
-//            '/programmes/b006qjxt/episodes/downloads.rss', // The six o'clock
-//            '/programmes/b006qtl3/episodes/downloads.rss', // The world tonight
-//            '/programmes/b006qptc/episodes/downloads.rss' // World at one
-//            'http://www.bbc.co.uk/programmes/b006qjxt/episodes/downloads.rss', // The six o'clock
-//            'http://www.bbc.co.uk/programmes/b006qtl3/episodes/downloads.rss', // The world tonight
-//            'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss' // World at one
 //        ];
+
 
         var newsList = [];
 
-        var promises = rssFlow.map(function(rss) {
+        var promises = [];
 
-            console.log(rss.url);
+        // Create a closure to embed the rss and source in the response
+        var success = function(rss, source) {
 
-            return $http.get(rss.url).then(
-                // Success
-                function(result) {
+            var localRss = rss;
+            var localSource = source;
 
-                    var rssObj = x2js.xml_str2json( result.data );
-                    var items = rssObj.rss.channel.item;
+            return function(result, source) {
 
-                    for (var itemPos = 0; itemPos < items.length; itemPos++) {
-                        var item = items[itemPos];
-                        var link = item.link;
-                        var theDate = new Date();
-                        theDate.setTime(Date.parse(item.pubDate));
-                        newsList.push(
-                            {
-                                dayWeight: rss.dayWeight,
-                                rssLabel: rss.label,
-                                theDate: theDate,
-                                url: link,
-                                progress: 0
+                var rssObj = x2js.xml_str2json( result.data );
+                var items = rssObj.rss.channel.item;
+
+                for (var itemPos = 0; itemPos < items.length; itemPos++) {
+                    var item = items[itemPos];
+                    var link = item.link;
+                    var theDate = new Date();
+                    theDate.setTime(Date.parse(item.pubDate));
+                    newsList.push(
+                        {
+                            dayWeight: localRss.dayWeight,
+                            theDate: theDate,
+                            url: link,
+                            label: item.title,
+                            source: localSource,
+                            flow: localRss.label,
+                            progress: 0
+                        }
+                    )
+                }
+            }
+        };
+
+
+        for (var podCastEnum =0; podCastEnum < $scope.config.podcasts.length; podCastEnum++) {
+
+            var podcast = $scope.config.podcasts[podCastEnum];
+
+            for (var rssFlowEnum=0; rssFlowEnum < podcast.rssFlows.length; rssFlowEnum++) {
+
+                var theRss = podcast.rssFlows[rssFlowEnum];
+
+                if (theRss.enabled) {
+                    promises.push(
+                        $http.get(theRss.url).then(
+                            // Success
+                            success(theRss, podcast.source),
+                            // Error
+                            function(error) {
+                                // todo
                             }
                         )
-                    }
-                },
-                // Error
-                function(error) {
-                    // todo
+                    );
                 }
-            );
-        })
+            }
+
+        }
 
         $q.all(promises).then(function() {
 
             // Sort list by date desc
-            newList = newsList.sort(function(a,b) {
-                aDate = new Date(a.theDate).getTime();
-                bDate = new Date(b.theDate).getTime();
+            var newList = newsList.sort(function(a,b) {
+                var aDate = new Date(a.theDate).getTime();
+                var bDate = new Date(b.theDate).getTime();
                 if (aDate == bDate) {
                     return b.dayWeight - a.dayWeight;
                 }
@@ -117,6 +188,11 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
             $scope.newsList = newList;
 
         });
+
+    }
+
+    $scope.save =function() {
+
 
     }
 

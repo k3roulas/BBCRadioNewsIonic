@@ -1,0 +1,20 @@
+    <ion-pane>
+      <ion-content>
+
+          <div ng-repeat="podcast in config.podcasts">
+
+          <h2> {{podcast.source}} </h2>
+          <ul class="list">
+              <li ng-repeat="rss in podcast.rssFlows"  class="item item-checkbox">
+                  <label class="checkbox">
+                      <input type="checkbox" ng-model="rss.enabled">
+                  </label>
+                  {{rss.label}}
+              </li>
+          </ul>
+          </div>
+
+          <button ui-sref="home" class="button button-full button-positive">Back</button>
+
+      </ion-content>
+    </ion-pane>
