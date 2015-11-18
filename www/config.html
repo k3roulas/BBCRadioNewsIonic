@@ -2,60 +2,12 @@
       <ion-content>
 
           <h2> BBC Radio One</h2>
-          <div class="list list-inset">
-
-              <div class="item item-toggle">
-                  The world tonight
-                  <label class="toggle">
-                      <input type="checkbox">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </div>
-
-              <div class="item item-toggle">
-                  The six o'clock
-                  <label class="toggle">
-                      <input type="checkbox">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </div>
-
-              <div class="item item-toggle">
-                  World at one
-                  <label class="toggle">
-                      <input type="checkbox">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </div>
-
-          </div>
-          <h2> BBC Radio Two</h2>
           <ul class="list">
-              <li class="item item-checkbox">
+              <li ng-repeat="podcast in config.podcasts"  class="item item-checkbox">
                   <label class="checkbox">
-                      <input type="checkbox">
+                      <input type="checkbox" ng-model="podcast.enabled">
                   </label>
-                  The world tonight
-              </li>
-
-              <li class="item item-checkbox">
-                  <label class="checkbox">
-                      <input type="checkbox">
-                  </label>
-                  The six o'clock
-              </li>
-
-              <li class="item item-checkbox">
-                  <label class="checkbox">
-                      <input type="checkbox">
-                  </label>
-                  World at one
+                  {{podcast.label}}
               </li>
 
           </ul>

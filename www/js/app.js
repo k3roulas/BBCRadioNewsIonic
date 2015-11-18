@@ -37,6 +37,16 @@ app.config(
 })
 
 
+
+var defaultConfig =  {
+    podcasts : [
+        { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124, enabled: true },
+        { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118, enabled: true },
+        { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113, enabled: true },
+    ]
+}
+
+
 app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.errorPln = false;
@@ -46,6 +56,23 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     $scope.playerStatus = 'stop';
 
     $scope.newsList = [];
+
+
+    // TODO : encapsulate that
+    var storage = window.localStorage;
+    var storedConfig =  storage.getItem('config');
+
+    if (storedConfig !== null) {
+        $scope.config = JSON.parse(storedConfig);
+    } else {
+        $scope.config = defaultConfig;
+    }
+
+    $scope.$watch('config', function(newVal, oldVal){
+        if (newVal !== 'undefined') {
+            storage.setItem('config', JSON.stringify(newVal));
+        }
+    }, true);
 
 
 //    {
@@ -62,32 +89,27 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
     $scope.refresh = function()
     {
-        var rssFlow = [
-            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
-            { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
-            { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
+//        var rssFlow = [
+//            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
+//            { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
+//            { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
 //            { url : 'http://www.bbc.co.uk/programmes/b006qjxt/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
 //            { url : 'http://www.bbc.co.uk/programmes/b006qtl3/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118 },
 //            { url : 'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
-        ];
-
-
-//        var rssFlow = [
-//            '/programmes/b006qjxt/episodes/downloads.rss', // The six o'clock
-//            '/programmes/b006qtl3/episodes/downloads.rss', // The world tonight
-//            '/programmes/b006qptc/episodes/downloads.rss' // World at one
-//            'http://www.bbc.co.uk/programmes/b006qjxt/episodes/downloads.rss', // The six o'clock
-//            'http://www.bbc.co.uk/programmes/b006qtl3/episodes/downloads.rss', // The world tonight
-//            'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss' // World at one
 //        ];
+
 
         var newsList = [];
 
-        var promises = rssFlow.map(function(rss) {
+        var promises = $scope.config.podcasts.map(function(rss) {
 
+            if (rss.enabled === false) {
+                return;
+            }
             console.log(rss.url);
 
             return $http.get(rss.url).then(
+
                 // Success
                 function(result) {
 
@@ -132,6 +154,11 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
             $scope.newsList = newList;
 
         });
+
+    }
+
+    $scope.save =function() {
+
 
     }
 
