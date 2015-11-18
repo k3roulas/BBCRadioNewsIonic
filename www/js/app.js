@@ -79,7 +79,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
         $scope.config = defaultConfig;
     }
 
-    $scope.config = defaultConfig;
+//    $scope.config = defaultConfig;
 
 
     $scope.$watch('config', function(newVal, oldVal){
@@ -96,6 +96,8 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
         concurrency: 4, // how many concurrent uploads/downloads?
         Promise: $q // Your favorite Promise/A+ library!
     });
+
+    fs.ensure('downloads');
 
 //    {
 //        "name": "BBCRadioNewsIonic",
@@ -199,11 +201,86 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
     }
 
-    $scope.save =function() {
 
+    $scope.download = function () {
+
+        // Todo check free space -> alert($cordovaFile.getFreeDiskSpace());
+
+
+        var filename = this.news.url.split(/[\\/]/).pop();
+        var directory = 'audioFiles';
+        var destination = 'download/' + filename;
+        var source = this.news.url.replace('http://open.live.bbc.co.uk/mediaselector', '/mediaselector');
+
+        console.log(source, destination);
+
+        var pro = fs.download(
+            source,
+            destination,
+            function(progress) {
+                console.log('progress');
+                console.log(progress);
+//                theNews.progress = parseInt((progress.loaded / progress.total) * 100);
+            }
+        );
+
+        pro.then(
+            function() {console.log('success'); },
+            function() {console.log('error'); }
+        );
+//        var promise = fs.download(
+//            this.news.url,
+//            destination,
+//            function(progress) {
+//                console.log(progress);
+//                theNews.progress = parseInt((progress.loaded / progress.total) * 100);
+//            }
+//        );
+//
+
+
+
+        console.log('download  ' + filename);
+
+//        $cordovaFile.createDir(directory, false);
+//        var newFile = $cordovaFile.createFile(directory + '/' + filename, false);
+
+//        var filePath = cordova.file.dataDirectory + '/download/' + filename;
+//        var options = {};
+//        var trustHosts = true;
+//
+//        var theNews = this.news;
+//        theNews.progress = 'start';
+//
+//        $cordovaFileTransfer.download(this.news.url, filePath, options, trustHosts)
+//            .then(
+//            function(result) {
+//                alert('downloaded');
+//            },
+//            function(err) {
+//                alert('error');
+//            },
+//            function(progress) {
+//                theNews.progress = parseInt((progress.loaded / progress.total) * 100);
+//            }
+//        );
 
     }
 
+
+    $scope.createFile = function() {
+        fs.write("fuck.txt", "what the fuck").then(
+            function() {console.log('success'); },
+            function() {console.log('error'); }
+        );
+    }
+
+    $scope.readFile = function() {
+        fs.read("fuck.txt").then(
+            function(e) {console.log('success');console.log(e); },
+            function() {console.log('error'); }
+        );
+    }
 
     $scope.isOnAir = function(news) {
         return (news.url === $scope.onAirUrl);

@@ -5,6 +5,10 @@
     {
         "path": "/programmes",
         "proxyUrl": "http://www.bbc.co.uk/programmes"
+    },
+    {
+        "path": "/mediaselector",
+        "proxyUrl": "http://open.live.bbc.co.uk/mediaselector"
     }
 ]
 }
