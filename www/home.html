@@ -23,8 +23,7 @@
                   <div ng-show="isOnAir(news)">On Air</div>
                   <!--{{news.theDate | date:'medium'}}-->
                   <!--{{news.theDate | date:'EEEE h:mm'}} -->
-                  {{news.theDate | date:'EEEE'}} -
-                  {{news.rssLabel}}
+                  {{news.theDate | date:'EEEE'}} - {{news.source}} - {{news.flow}} - {{news.label}}
 
 
                   <button class="" ng-click="play('{{news.url}}')">

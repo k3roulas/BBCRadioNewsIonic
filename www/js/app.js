@@ -40,10 +40,21 @@ app.config(
 
 var defaultConfig =  {
     podcasts : [
-        { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124, enabled: true },
-        { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118, enabled: true },
-        { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113, enabled: true },
-    ]
+        {
+            source : 'BBC Radio 4',
+            rssFlows : [
+                { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124, enabled: true },
+                { url : '/programmes/b006qjxt/episodes/downloads.rss', label: "The six o'clock", dayWeight: 118, enabled: true },
+                { url : '/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113, enabled: true },
+            ]
+        },
+        {
+            source : 'Global News Podcast',
+            rssFlows : [
+                { url : '/programmes/p02nq0gn/episodes/downloads.rss', label: "Global News Podcast", dayWeight: 105, enabled: true },
+            ]
+        }
+        ]
 }
 
 
@@ -67,6 +78,9 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     } else {
         $scope.config = defaultConfig;
     }
+
+    $scope.config = defaultConfig;
+
 
     $scope.$watch('config', function(newVal, oldVal){
         if (newVal !== 'undefined') {
@@ -101,50 +115,70 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
         var newsList = [];
 
-        var promises = $scope.config.podcasts.map(function(rss) {
+        var promises = [];
 
-            if (rss.enabled === false) {
-                return;
+        // Create a closure to embed the rss and source in the response
+        var success = function(rss, source) {
+
+            var localRss = rss;
+            var localSource = source;
+
+            return function(result, source) {
+
+                var rssObj = x2js.xml_str2json( result.data );
+                var items = rssObj.rss.channel.item;
+
+                for (var itemPos = 0; itemPos < items.length; itemPos++) {
+                    var item = items[itemPos];
+                    var link = item.link;
+                    var theDate = new Date();
+                    theDate.setTime(Date.parse(item.pubDate));
+                    newsList.push(
+                        {
+                            dayWeight: localRss.dayWeight,
+                            theDate: theDate,
+                            url: link,
+                            label: item.title,
+                            source: localSource,
+                            flow: localRss.label,
+                            progress: 0
+                        }
+                    )
+                }
             }
-            console.log(rss.url);
+        };
 
-            return $http.get(rss.url).then(
 
-                // Success
-                function(result) {
+        for (var podCastEnum =0; podCastEnum < $scope.config.podcasts.length; podCastEnum++) {
 
-                    var rssObj = x2js.xml_str2json( result.data );
-                    var items = rssObj.rss.channel.item;
+            var podcast = $scope.config.podcasts[podCastEnum];
 
-                    for (var itemPos = 0; itemPos < items.length; itemPos++) {
-                        var item = items[itemPos];
-                        var link = item.link;
-                        var theDate = new Date();
-                        theDate.setTime(Date.parse(item.pubDate));
-                        newsList.push(
-                            {
-                                dayWeight: rss.dayWeight,
-                                rssLabel: rss.label,
-                                theDate: theDate,
-                                url: link,
-                                progress: 0
+            for (var rssFlowEnum=0; rssFlowEnum < podcast.rssFlows.length; rssFlowEnum++) {
+
+                var theRss = podcast.rssFlows[rssFlowEnum];
+
+                if (theRss.enabled) {
+                    promises.push(
+                        $http.get(theRss.url).then(
+                            // Success
+                            success(theRss, podcast.source),
+                            // Error
+                            function(error) {
+                                // todo
                             }
                         )
-                    }
-                },
-                // Error
-                function(error) {
-                    // todo
+                    );
                 }
-            );
-        })
+            }
+
+        }
 
         $q.all(promises).then(function() {
 
             // Sort list by date desc
-            newList = newsList.sort(function(a,b) {
-                aDate = new Date(a.theDate).getTime();
-                bDate = new Date(b.theDate).getTime();
+            var newList = newsList.sort(function(a,b) {
+                var aDate = new Date(a.theDate).getTime();
+                var bDate = new Date(b.theDate).getTime();
                 if (aDate == bDate) {
                     return b.dayWeight - a.dayWeight;
                 }
