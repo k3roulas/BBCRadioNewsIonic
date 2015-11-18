@@ -89,6 +89,14 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     }, true);
 
 
+    // TODO : define if the initialisation of promiseFS has to be done here
+    var fs = CordovaPromiseFS({
+        persistent: true, // or false
+        storageSize: 50*1024*1024, // storage size in bytes, default 20MB
+        concurrency: 4, // how many concurrent uploads/downloads?
+        Promise: $q // Your favorite Promise/A+ library!
+    });
+
 //    {
 //        "name": "BBCRadioNewsIonic",
 //        "app_id": "",

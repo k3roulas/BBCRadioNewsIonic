@@ -9,6 +9,8 @@
   "dependencies": {
     "angular-audio": "~1",
     "angular-xml": "~2",
-    "ngCordova": "~0.1.23-alpha"
+    "ngCordova": "~0.1.23-alpha",
+    "cordova-promise-fs": "~0.13.0",
+    "bluebird": "~3.0.5"
   }
 }
