@@ -99,6 +99,26 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
     fs.ensure('downloads');
 
+
+    $scope.loadNews = function() {
+        var storedNews =  storage.getItem('news');
+        if (storedNews !== null) {
+            $scope.newsList = JSON.parse(storedNews);
+//            console.log(JSON.parse(storedNews));
+        }
+    };
+
+    $scope.saveNews = function() {
+        console.log($scope.newsList);
+        storage.setItem('news', JSON.stringify($scope.newsList));
+    };
+
+    var mergeNewOld = function(newList, oldList) {
+        var ret = { new: [],  deleted: []};
+
+        return ret;
+    }
+
 //    {
 //        "name": "BBCRadioNewsIonic",
 //        "app_id": "",
