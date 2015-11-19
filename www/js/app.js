@@ -102,6 +102,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
     $scope.loadNews = function() {
         var storedNews =  storage.getItem('news');
+        console.log('loaded');
         if (storedNews !== null) {
             $scope.newsList = JSON.parse(storedNews);
 //            console.log(JSON.parse(storedNews));
@@ -109,15 +110,97 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     };
 
     $scope.saveNews = function() {
-        console.log($scope.newsList);
+
+        console.log('saved');
+        // For dev and test purpose truncate the first element;
+        $scope.newsList.splice(0, 1);
         storage.setItem('news', JSON.stringify($scope.newsList));
+
+//        storage.setItem('news', JSON.stringify($scope.newsList));
     };
 
-    var mergeNewOld = function(newList, oldList) {
-        var ret = { new: [],  deleted: []};
+    var merge = function(existingList, list) {
 
-        return ret;
+        var update = false;
+        list.map(function(item) {
+            // search url in the existing list
+            var found = false;
+            for (var posList = 0; posList <existingList.length; posList++) {
+                var candidate = existingList[posList];
+                if ((candidate.theDate.getTime() == item.theDate.getTime())
+                    && (candidate.url === item.url)) {
+                    found = true;
+                }
+            }
+            if (found === false) {
+                existingList.push(item);
+                update = true;
+            }
+        });
+
+        return {update: update, list:existingList};
     }
+
+
+    var mergeNews = function(oldList, newList) {
+
+        var updatedList;
+        var deletedElements;
+        var newElements;
+
+        var tmpOldList = [];
+        var tmpNewList = [];
+
+        oldList.map(function(item) {
+            tmpOldList.push(item);
+        });
+        newList.map(function(item) {
+            tmpNewList.push(item);
+        });
+
+        var search = function(list, candidate) {
+            var foundPos = null;
+            var posList = null;
+            for (posList = 0; posList <list.length; posList++) {
+                var item = list[posList];
+
+                // TODO : understand why this one is not a date, probably because it's from a backup
+                // TODO : May be have a look to http://stackoverflow.com/questions/4511705/how-to-parse-json-to-receive-a-date-object-in-javascript
+                var theItemDate = new Date();
+                theItemDate.setTime(Date.parse(item.theDate));
+
+                if ((candidate.theDate.getTime() == theItemDate.getTime())
+                    && (candidate.url == item.url)) {
+                    foundPos = posList;
+                    break;
+                }
+            }
+
+            return foundPos;
+        };
+
+        tmpNewList.map(function(item) {
+
+            var posOldList = search(tmpOldList, item);
+            if (posOldList !== null) {
+
+                // Update element
+                item.downloaded = tmpOldList[posOldList].downloaded;
+
+                // Remove element from old list
+                tmpOldList.splice(posOldList, 1);
+            }
+
+        });
+
+        deletedElements = tmpOldList;
+
+        console.log('deletedElements');
+        console.log(deletedElements);
+
+        return tmpNewList;
+
+    };
 
 //    {
 //        "name": "BBCRadioNewsIonic",
@@ -171,6 +254,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
                             label: item.title,
                             source: localSource,
                             flow: localRss.label,
+                            downloaded: false,
                             progress: 0
                         }
                     )
@@ -215,12 +299,23 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
                 return bDate - aDate;
             });
 
-            $scope.newsList = newList;
+            // For test purpose delete the last from the List
+            newList.pop();
+
+            // Merge with existing list
+            mergedList = mergeNews($scope.newsList, newList);
+
+            // Set mergedList
+            $scope.newsList = mergedList;
 
         });
 
     }
 
+    $scope.downloaded = function() {
+        console.log(this.news);
+        this.news.downloaded = !(this.news.downloaded);
+    }
 
     $scope.download = function () {
 
