@@ -4,7 +4,29 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 
-var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova']);
+var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova'])
+    .service('NewsPersister', function(){
+
+
+        var storage = window.localStorage;
+        var key = 'news';
+
+        this.load = function() {
+
+            var storedNews =  storage.getItem(key);;
+            if (storedNews !== null) {
+                return JSON.parse(storedNews);
+            }
+            return null;
+        };
+
+        this.save = function(newsList) {
+
+//            $scope.newsList.splice(0, 1);
+            storage.setItem(key, JSON.stringify(newsList));
+
+        };
+    });
 
 
 app.run(function($ionicPlatform) {
@@ -58,7 +80,7 @@ var defaultConfig =  {
 }
 
 
-app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile) {
+app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile, NewsPersister) {
 
     $scope.errorPln = false;
     $scope.testPln = false;
@@ -101,22 +123,11 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
 
     $scope.loadNews = function() {
-        var storedNews =  storage.getItem('news');
-        console.log('loaded');
-        if (storedNews !== null) {
-            $scope.newsList = JSON.parse(storedNews);
-//            console.log(JSON.parse(storedNews));
-        }
+        $scope.newsList = NewsPersister.load();
     };
 
     $scope.saveNews = function() {
-
-        console.log('saved');
-        // For dev and test purpose truncate the first element;
-        $scope.newsList.splice(0, 1);
-        storage.setItem('news', JSON.stringify($scope.newsList));
-
-//        storage.setItem('news', JSON.stringify($scope.newsList));
+        NewsPersister.save($scope.newsList);
     };
 
     var merge = function(existingList, list) {
@@ -329,13 +340,20 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
         console.log(source, destination);
 
+        var theNews = this.news;
         var pro = fs.download(
             source,
             destination,
-            function(progress) {
-                console.log('progress');
-                console.log(progress);
-//                theNews.progress = parseInt((progress.loaded / progress.total) * 100);
+            function(progressEvent) {
+                if (progressEvent.lengthComputable) {
+                    theNews.downloaded = true;
+                    var percentComplete = progressEvent.loaded / progressEvent.total;
+                    console.log(percentComplete);
+                    theNews.progress = percentComplete * 100;
+                    $scope.$apply();
+                } else {
+                    // Unable to compute progress information since the total size is unknown
+                }
             }
         );
 
