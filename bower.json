@@ -7,7 +7,7 @@
     "angular-audio": "ngAudio#~1.7.1"
   },
   "dependencies": {
-    "angular-audio": "~1",
+    "angular-audio": "^1.7.1",
     "angular-xml": "~2",
     "ngCordova": "~0.1.23-alpha"
   }
