@@ -1,26 +1,22 @@
     <ion-pane>
       <ion-header-bar class="bar-stable">
-        <h1 class="title">BBC Radio 4 News <button ng-click="refresh()">Refresh</button> - <button ui-sref="config">Config</button></h1>
+        <h1 class="title">BBC Radio 4 News <button class="ion-ios-loop-strong" ng-click="refresh()"></button> - <button ui-sref="config">Config</button></h1>
       </ion-header-bar>
 
-      <ion-header-bar class="bar-subheader">
-            <div class="row">
-                <button class="button col-50" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>
-                <button class="button col-50" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-pause"></i>Pause</button>
-                <button class="button col-50" ng-click="stop()"><i class="icon ion-stop"></i>Stop</button>
-            </div>
-            CurrentTime : {{player.currentTime | trackTime}} - Duration : {{player.duration | trackTime}}
-            <div class="row range">
-                <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='player.progress'>
-            </div>
 
-        </ion-header-bar>
 
       <ion-content>
+
+          <ion-refresher on-refresh="refresh()">
+
+          </ion-refresher>
+
           <ion-list>
-              <ion-item ng-repeat="news in newsList track by $index" >
+              <ion-item ng-repeat="news in newsList track by $index" class="item ng-binding {{news.class}}" >
+
 
                   <div ng-show="isOnAir(news)">On Air</div>
+
                   <!--{{news.theDate | date:'medium'}}-->
                   <!--{{news.theDate | date:'EEEE h:mm'}} -->
                   {{news.theDate | date:'EEEE'}} - {{news.source}} - {{news.flow}} - {{news.label}}
@@ -35,3 +31,32 @@
           </ion-list>
       </ion-content>
     </ion-pane>
+
+    <ion-footer-bar class="content" ng-show="playerStatus == 'pause' || playerStatus == 'play'">
+        <div class="row playerProgressBar" ng-show="!player.canPlay">
+            <div class="col">
+                <!--Loading-->
+            <ion-spinner icon="ios"></ion-spinner>
+            </div>
+        </div>
+        <div class="row playerProgressBar" ng-show="player.canPlay">
+            <!--CurrentTime -->
+            <span class="">
+                {{player.currentTime | trackTime}}
+            </span>
+            <input class='form-control col' type=range min=0 max=1 step=0.01 ng-model='player.progress'>
+            <!--Duration-->
+            <span class="">
+                {{player.duration | trackTime}}
+            </span>
+        </div>
+        <div class="row">
+            <!--<button class="button col " ng-show="playerStatus == 'pause'" ng-click="unPause()">play</button>-->
+            <!--<button class="button col " ng-show="playerStatus == 'play'" ng-click="pause()">pause</button>-->
+            <!--<button class="button col " ng-click="stop()">stop</button>-->
+            <button class="button col button-clear button-dark" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>
+            <button class="button col button-clear button-dark" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-pause"></i>Pause</button>
+            <button class="button col button-clear button-dark" ng-click="stop()"><i class="icon ion-stop"></i>Stop</button>
+        </div>
+
+    </ion-footer-bar>

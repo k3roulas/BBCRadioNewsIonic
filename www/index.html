@@ -8,12 +8,9 @@
 
     <title></title>
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
-    -->
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -30,6 +27,31 @@
     <script src="js/app.js"></script>
 
   </head>
+
+
+  <style>
+    /*CF http://stackoverflow.com/questions/26938021/angular-ng-if-or-ng-show-responds-slow-2second-delay*/
+    .ng-hide.ng-hide-animate{
+      display: none !important;
+    }
+    /*.BBCRadio4 {*/
+      /*background-color: #002C5F;*/
+      /*color: #ffffff;*/
+    /*}*/
+    /*.GlobalNewsPodcast {*/
+      /*background-color: #991B1E;*/
+      /*color: #ffffff;*/
+    /*}*/
+    .playerProgressBar {
+      height: 45px !important;;
+    }
+
+    ion-footer-bar .row {
+      padding: 5px !important;
+      margin: 5px !important;
+      text-align: center;
+    }
+  </style>
   <!--<body ng-controller="HomeCtrl" ng-class="{'testPlnCss': testPln}">-->
   <body ng-controller="HomeCtrl" ng-class="{'bar-player-away': isPlayerAway()}">
 

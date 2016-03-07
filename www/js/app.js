@@ -140,6 +140,7 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
                             url: link,
                             label: item.title,
                             source: localSource,
+                            class: localSource.replace(/ /g, ""),
                             flow: localRss.label,
                             progress: 0
                         }
@@ -175,6 +176,8 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
         $q.all(promises).then(function() {
 
+            $scope.$broadcast('scroll.refreshComplete');
+
             // Sort list by date desc
             var newList = newsList.sort(function(a,b) {
                 var aDate = new Date(a.theDate).getTime();
@@ -207,7 +210,6 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 
 
     $scope.play = function(url) {
-        console.log(url);
         $scope.playerStatus = 'play';
         $scope.onAirUrl = url;
         if ($scope.player != null) {

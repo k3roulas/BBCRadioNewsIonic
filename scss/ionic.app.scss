@@ -18,5 +18,25 @@ $dark:                            #444 !default;
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
+$bar-footer-height: 120px;
+
+
+
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+
+// Footer at bottom
+.bar-footer {
+  flex-direction: column;
+  bottom: 0;
+  border-top-width: 1px;
+  border-bottom-width: 0;
+  background-position: top;
+  //align-items: stretch;
+
+  height: $bar-footer-height;
+
+  &.item-input-inset {
+    position: absolute;
+  }
+}
