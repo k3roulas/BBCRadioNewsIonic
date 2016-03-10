@@ -1,11 +1,11 @@
     <ion-pane>
-      <ion-content>
+      <ion-content class="dark">
 
           <div ng-repeat="podcast in config.podcasts">
 
           <h2> {{podcast.source}} </h2>
           <ul class="list">
-              <li ng-repeat="rss in podcast.rssFlows"  class="item item-checkbox">
+              <li ng-repeat="rss in podcast.rssFlows"  class="item item-checkbox item-dark">
                   <label class="checkbox">
                       <input type="checkbox" ng-model="rss.enabled">
                   </label>

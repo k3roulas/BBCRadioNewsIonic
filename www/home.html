@@ -1,5 +1,5 @@
     <ion-pane>
-      <ion-header-bar class="bar-stable bar-header bar-dark">
+      <ion-header-bar class="bar-stable bar-header">
         <h1 class="title">BBC Radio News </h1>
           <button ui-sref="config" class="button button-clear button-positive ">
               <i class="ion-settings larger-icon"></i>
@@ -29,8 +29,15 @@
                           </div>
                           <div class="col col-80">
                               <div class="row news-information-row">
+                                  <span class="news-information-flow">
                                   {{news.flow}}
-                                  - {{news.theDate | date:'EEE'}}
+                                </span>
+                                <span class="news-information-date-separator">
+                                  -
+                                </span>
+                                <span class="news-information-date">
+                                    {{news.theDate | date:'EEE'}}
+                                </span>
                               </div>
                               <div class="row news-information-row">
                                   <div class="col">
@@ -80,7 +87,7 @@
       </ion-content>
     </ion-pane>
 
-    <ion-footer-bar class="content bar-dark" ng-show="playerStatus == 'pause' || playerStatus == 'play'">
+    <ion-footer-bar class="bar-stable" ng-show="playerStatus == 'pause' || playerStatus == 'play'">
         <div class="row playerProgressBar" ng-show="!player.canPlay">
             <div class="col">
                 <!--Loading-->
@@ -102,9 +109,9 @@
             <!--<button class="button col " ng-show="playerStatus == 'pause'" ng-click="unPause()">play</button>-->
             <!--<button class="button col " ng-show="playerStatus == 'play'" ng-click="pause()">pause</button>-->
             <!--<button class="button col " ng-click="stop()">stop</button>-->
-            <button class="button col button-clear" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-ios-play-outline"></i></button>
-            <button class="button col button-clear" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-ios-pause-outline"></i></button>
-            <button class="button col button-clear" ng-click="stop()"><i class="icon ion-stop"></i></button>
+            <button class="button col button-clear button-dark" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-ios-play-outline"></i></button>
+            <button class="button col button-clear button-dark" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-ios-pause-outline"></i></button>
+            <button class="button col button-clear button-dark" ng-click="stop()"><i class="icon ion-stop"></i></button>
         </div>
 
     </ion-footer-bar>
