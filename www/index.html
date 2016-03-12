@@ -43,8 +43,12 @@
       /*color: #ffffff;*/
     /*}*/
     .playerProgressBar {
-      height: 45px !important;;
+      height: 45px !important;
     }
+    .playerProgressBar span:first-child {
+      color: #F54997;
+    }
+
 
     ion-footer-bar .row {
       padding: 5px !important;
@@ -73,38 +77,74 @@
       margin: 0px !important;
     }
     .BBCRadio4 img {
-      width: 21px;
-      height: 21px;
+      width: 32px;
+      height: 32px;
       content: url(img/icons/4.png);
       margin: -1px 4px 0px 0px;
     }
     .GlobalNewsPodcast img {
-      width: 21px;
-      height: 21px;
+      width: 32px;
+      height: 32px;
       content: url(img/icons/1.png);
       margin: -1px 4px 0px 0px;
+    }
+    .news-information-chanel img {
+      width: 21px;
+      height: 21px;
     }
     .center-content {
       margin-left: auto;
       margin-right: auto;
       display: block;
     }
-    .news-item i.ion-radio-waves {
+    .news-item i.ion-radio-waves-play {
       font-size: 30px;
     }
+    .news-item.onAir i.ion-radio-waves-play {
+      color: #F54997;
+    }
+
     .col-img {
       width: 50px;
     }
-    .item p {
-        font-size: 12px !important;
-        color: #bbb;
-    }
+    /*.item p {*/
+        /*font-size: 12px !important;*/
+        /*color: #bbb;*/
+    /*}*/
     .item {
-      border-color: #555;
+      border-top-width: 0px !important;
+      border-bottom-width: 0px !important;
     }
     i.ion-settings {
         font-size: 30px;
     }
+    .title-image {
+      margin-top: 9px;
+    }
+    .title-text {
+      vertical-align: top;
+      /*color: #bbb;*/
+    }
+
+    ion-header-bar {
+      border-bottom-width: 0px !important;
+    }
+    /*.button.button-clear {*/
+      /*color: #bbb !important;*/
+    /*}*/
+    /*PLN TODO : dry colors*/
+    /*.bar {*/
+      /*color: #bbb ! important;*/
+    /*}*/
+    /*.bar.bar-stable {*/
+      /*color: #bbb ! important;*/
+    /*}*/
+    .range input::-ms-thumb {
+      background-color: red !important;
+    }
+    /*.onAir {*/
+      /*background-color: red !important;*/
+    /*}*/
 
 
 

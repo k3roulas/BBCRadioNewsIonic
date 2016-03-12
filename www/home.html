@@ -1,7 +1,10 @@
     <ion-pane>
-      <ion-header-bar class="bar-stable bar-header">
-        <h1 class="title">BBC Radio News </h1>
-          <button ui-sref="config" class="button button-clear button-positive ">
+      <ion-header-bar align-title="center" class="bar-stable bar-header">
+        <h1 class="title">
+            <img class="title-image" src="img/bbc-blocks-light.png">
+            <span class="title-text">Radio News</span>
+        </h1>
+          <button ui-sref="config" class="button button-clear">
               <i class="ion-settings larger-icon"></i>
           </button>
       </ion-header-bar>
@@ -15,25 +18,19 @@
           </ion-refresher>
 
           <ion-list>
-              <ion-item ng-repeat="news in newsList track by $index" class="item ng-binding {{news.class}} news-item" >
+              <ion-item ng-repeat="news in newsList track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
 
-                  <!--<div class="news-item">-->
-
-                  <div ng-show="isOnAir(news)">On Air</div>
-
-                      <!--{{news.theDate | date:'medium'}}-->
-                      <!--{{news.theDate | date:'EEEE h:mm'}}-->
                       <div class="row">
-                          <div class="col-image">
+                          <div class="col-center">
                               <img class="news-information-chanel {{news.class}}" />
                           </div>
-                          <div class="col col-80">
+                          <div class="col-80">
                               <div class="row news-information-row">
                                   <span class="news-information-flow">
                                   {{news.flow}}
                                 </span>
                                 <span class="news-information-date-separator">
-                                  -
+                                     -
                                 </span>
                                 <span class="news-information-date">
                                     {{news.theDate | date:'EEE'}}
@@ -45,9 +42,10 @@
                                   </div>
                               </div>
                           </div>
+
                           <div class="col-center">
                               <button class="button button-clear button-dark center-content" ng-click="play('{{news.url}}')">
-                                  <i class="ion-radio-waves"></i>
+                                  <i class="ion-radio-waves-play"></i>
                               </button>
                           </div>
                       </div>
@@ -94,7 +92,7 @@
             <ion-spinner icon="ios"></ion-spinner>
             </div>
         </div>
-        <div class="playerProgressBar range" ng-show="player.canPlay">
+        <div class="playerProgressBar range range-positive" ng-show="player.canPlay">
             <!--CurrentTime -->
             <span class="">
                 {{player.currentTime | trackTime}}

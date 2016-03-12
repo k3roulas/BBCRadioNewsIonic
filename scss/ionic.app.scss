@@ -15,24 +15,44 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
-$light:                           #333 !default;
+$main-gray:                       #bbb !default;
+$light-gray:                      #333 !default;
+$bbc-pink:                        #F54997 !default;
+
+
+$light:                           $light-gray;
 $stable:                          #191919 !default;
-$positive:                        #F54997 !default;
+$positive:                        $bbc-pink;
 $calm:                            #11c1f3 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
-$dark:                            #555 !default;
+$dark:                            $main-gray;
 
-$base-background-color:           #333 !default;
-$base-color:                      #bbb !default;
+$base-background-color:           $light-gray !default;
+$base-color:                      $main-gray;
 
+//$button-light-text:               #bbb !important;
+
+$button-light-text:               $main-gray;
+$button-stable-text:              $main-gray;
+$toggle-handle-off-bg-color:      $bbc-pink;
+$checkbox-off-bg-color:           $main-gray;
+
+
+$ionicons-prefix: ion- !default;
+$ionicon-var-radio-waves-play: "\f2bb";
+.#{$ionicons-prefix}radio-waves-play:before {
+  @extend .ion;
+}
+.#{$ionicons-prefix}radio-waves-play:before { content: $ionicon-var-radio-waves-play; }
 
 //#EEE
 
 // The path for our ionicons font files, relative to the built CSS in www/css
-$ionicons-font-path: "../lib/ionic/fonts" !default;
+//$ionicons-font-path: "../lib/ionic/fonts" !default;
+$ionicons-font-path: "../fonts" !default;
 
 $bar-footer-height: 120px;
 
