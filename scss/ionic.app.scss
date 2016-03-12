@@ -81,3 +81,53 @@ $bar-footer-height: 120px;
     position: absolute;
   }
 }
+
+
+loading-directive {
+
+  -webkit-transition: height .4s, padding .4s;
+
+  width: 100%;
+  font-size: 30px;
+  text-align: center;
+  color: $scroll-refresh-icon-color;
+  padding: 20px 0 10px 0;
+
+  height: 60px;
+  display: block;
+
+  //transition: padding 3.8s;
+
+
+  //@include transition(height, padding 2.2s);
+
+  .loading-directive {
+    -webkit-transform: scale(1,1);
+    transform: scale(1,1);
+
+
+    //@include transition(transform 2s);
+    //@include transition(-webkit-transform 2.2s);
+  }
+
+  &.closing {
+    height: 0px;
+    padding: 0px;
+
+
+    .loading-directive {
+
+      -webkit-transform: scale(0,0);
+      transform: scale(0,0);
+      @include transition(transform .2s);
+      @include transition(-webkit-transform .2s);
+
+    }
+  }
+
+  //.i {
+  //  -webkit-animation-duration: 3.5s;
+  //  -moz-animation-duration: 3.5s;
+  //  animation-duration: 3.5s;
+  //}
+}

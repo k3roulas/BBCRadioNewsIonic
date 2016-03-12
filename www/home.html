@@ -1,7 +1,7 @@
     <ion-pane>
-      <ion-header-bar align-title="center" class="bar-stable bar-header">
+      <ion-header-bar class="bar-stable bar-header">
         <h1 class="title">
-            <img class="title-image" src="img/bbc-blocks-light.png">
+            <img class="title-image" src="img/bbc-blocks-light.png" ng-click="pln()">
             <span class="title-text">Radio News</span>
         </h1>
           <button ui-sref="config" class="button button-clear">
@@ -13,9 +13,9 @@
 
       <ion-content>
 
-          <ion-refresher on-refresh="refresh()">
 
-          </ion-refresher>
+          <loading-directive></loading-directive>
+          <ion-refresher ng-if="!autoRefresh" on-refresh="refresh()"></ion-refresher>
 
           <ion-list>
               <ion-item ng-repeat="news in newsList track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
@@ -44,7 +44,7 @@
                           </div>
 
                           <div class="col-center">
-                              <button class="button button-clear button-dark center-content" ng-click="play('{{news.url}}')">
+                              <button class="button button-clear button-dark center-content" ng-click="play(news)">
                                   <i class="ion-radio-waves-play"></i>
                               </button>
                           </div>

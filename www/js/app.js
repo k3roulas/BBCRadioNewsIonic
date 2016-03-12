@@ -6,6 +6,29 @@
 
 var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova']);
 
+//.factory('persister', function() {
+//    var shinyNewServiceInstance;
+//    // factory function body that constructs shinyNewServiceInstance
+//    return shinyNewServiceInstance;
+//});
+app.service('persister', function() {
+
+    var storage = window.localStorage;
+
+    this.load = function(key) {
+
+        var storedNews =  storage.getItem(key);;
+        if (storedNews !== null) {
+            return JSON.parse(storedNews);
+        }
+        return null;
+    };
+
+    this.save = function(key, value) {
+        storage.setItem(key, JSON.stringify(value));
+    };
+});
+
 
 app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -58,35 +81,42 @@ var defaultConfig =  {
 }
 
 
-app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile) {
+app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile, persister) {
 
-    $scope.errorPln = false;
-    $scope.testPln = false;
     $scope.player = null;
     $scope.onAirUrl = null;
     $scope.playerStatus = 'stop';
 
     $scope.newsList = [];
 
+    var config = persister.load('config');
 
-    // TODO : encapsulate that
-    var storage = window.localStorage;
-    var storedConfig =  storage.getItem('config');
-
-    if (storedConfig !== null) {
-        $scope.config = JSON.parse(storedConfig);
-    } else {
+    if (config === null) {
         $scope.config = defaultConfig;
+        persister.save('config', defaultConfig);;
     }
 
-    $scope.config = defaultConfig;
+    $scope.config = config;
 
 
     $scope.$watch('config', function(newVal, oldVal){
         if (newVal !== 'undefined') {
-            storage.setItem('config', JSON.stringify(newVal));
+            persister.save('config', newVal);
         }
     }, true);
+
+    var list = persister.load('news');
+    if (list !== null) {
+        $scope.newsList = list;
+    }
+
+    $scope.$on('$stateChangeSuccess',
+        function(event, toState, toParams, fromState, fromParams){
+            if (toState.url == '/') {
+                $scope.refresh('auto');
+            }
+        }
+    )
 
 
 //    {
@@ -99,9 +129,9 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 //        }
 //    ]
 //    }
+//    $scope.$broadcast('loading.show');
 
-
-    $scope.refresh = function()
+    $scope.refresh = function(auto)
     {
 //        var rssFlow = [
 //            { url : '/programmes/b006qtl3/episodes/downloads.rss', label: "The world tonight", dayWeight: 124 },
@@ -112,6 +142,10 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
 //            { url : 'http://www.bbc.co.uk/programmes/b006qptc/episodes/downloads.rss', label: "World at one", dayWeight: 113}
 //        ];
 
+        if (auto === 'auto') {
+            $scope.autoRefresh = true;
+            $scope.$broadcast('loading.show');
+        }
 
         var newsList = [];
 
@@ -189,6 +223,12 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
             });
 
             $scope.newsList = newList;
+            persister.save('news', newList);
+
+            if (auto === 'auto') {
+                $scope.autoRefresh = false;
+                $scope.$broadcast('loading.hide');
+            }
 
         });
 
@@ -209,13 +249,13 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     }
 
 
-    $scope.play = function(url) {
+    $scope.play = function(news) {
         $scope.playerStatus = 'play';
-        $scope.onAirUrl = url;
+        $scope.onAirUrl = news.url;
         if ($scope.player != null) {
             $scope.player.pause();
         }
-        $scope.player = ngAudio.load(url);
+        $scope.player = ngAudio.load(news.url);
         $scope.player.play();
     }
 
@@ -242,5 +282,37 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
         }
     }
 
+    $scope.pln = function() {
+        //$scope.$broadcast('loading.hide');
+        console.log($scope.newsList);
+    }
+
 
 });
+
+
+app.directive('loadingDirective', ['$compile', function($compile) {
+        'use strict';
+
+        var loadingTemplate = '<div class="loading-directive"><ion-spinner></ion-spinner></div>';
+        //var loadingTemplate = '<div class="loading-directive"><i class="icon ion-ionic" /></div>';
+        var _linker = function(scope, element, attrs) {
+            element.html(loadingTemplate);
+            $compile(element.contents())(scope);
+
+            scope.$on('loading.hide', function() {
+                element.addClass('closing');
+            });
+            scope.$on('loading.show', function() {
+                element.removeClass('closing');
+            });
+        };
+
+        return {
+            restrict: 'E',
+            link: _linker,
+            scope: {
+                content: '='
+            }
+        };
+    }]);
