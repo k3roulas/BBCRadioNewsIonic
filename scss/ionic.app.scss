@@ -83,6 +83,7 @@ $bar-footer-height: 120px;
 }
 
 
+// todo : to be completed
 loading-directive {
 
   -webkit-transition: height .4s, padding .4s;
@@ -96,38 +97,20 @@ loading-directive {
   height: 60px;
   display: block;
 
-  //transition: padding 3.8s;
 
+  -webkit-transform: scale(1,1);
 
-  //@include transition(height, padding 2.2s);
-
-  .loading-directive {
-    -webkit-transform: scale(1,1);
-    transform: scale(1,1);
-
-
-    //@include transition(transform 2s);
-    //@include transition(-webkit-transform 2.2s);
-  }
 
   &.closing {
+
     height: 0px;
     padding: 0px;
 
+    -webkit-transform: scale(0,0);
+    transform: scale(0,0);
+    @include transition(transform .4s);
+    @include transition(-webkit-transform .4s);
 
-    .loading-directive {
-
-      -webkit-transform: scale(0,0);
-      transform: scale(0,0);
-      @include transition(transform .2s);
-      @include transition(-webkit-transform .2s);
-
-    }
   }
 
-  //.i {
-  //  -webkit-animation-duration: 3.5s;
-  //  -moz-animation-duration: 3.5s;
-  //  animation-duration: 3.5s;
-  //}
 }
