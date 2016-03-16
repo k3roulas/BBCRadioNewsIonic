@@ -11,14 +11,13 @@
 
 
 
-      <ion-content>
+      <ion-content delegate-handle="pullToRefreshContent">
 
 
-          <loading-directive></loading-directive>
-          <ion-refresher ng-if="!autoRefresh" on-refresh="refresh()"></ion-refresher>
+          <ion-refresher on-refresh="refresh()"></ion-refresher>
 
           <ion-list>
-              <ion-item ng-repeat="news in newsList track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
+              <ion-item ng-repeat="news in newsContainer.news track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
 
                       <div class="row">
                           <div class="col-center">
@@ -30,7 +29,7 @@
                                   {{news.flow}}
                                 </span>
                                 <span class="news-information-date-separator">
-                                      -
+                                       -
                                 </span>
                                 <span class="news-information-date">
                                     {{news.theDate | date:'EEE'}}
