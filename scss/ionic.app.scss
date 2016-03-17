@@ -83,34 +83,9 @@ $bar-footer-height: 120px;
 }
 
 
-// todo : to be completed
-loading-directive {
 
-  -webkit-transition: height .4s, padding .4s;
-
-  width: 100%;
-  font-size: 30px;
-  text-align: center;
-  color: $scroll-refresh-icon-color;
-  padding: 20px 0 10px 0;
-
-  height: 60px;
-  display: block;
-
-
-  -webkit-transform: scale(1,1);
-
-
-  &.closing {
-
-    height: 0px;
-    padding: 0px;
-
-    -webkit-transform: scale(0,0);
-    transform: scale(0,0);
-    @include transition(transform .4s);
-    @include transition(-webkit-transform .4s);
-
-  }
-
+.item p {
+  color: $main-gray;
+  font-size: 14px;
+  margin-bottom: 2px;
 }

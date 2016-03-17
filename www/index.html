@@ -49,19 +49,31 @@
     /*}*/
     .playerProgressBar {
       height: 45px !important;
+      text-align: center;
+
     }
+    .playerProgressBar .spinner{
+      padding-top: 10px;
+    }
+    .playerProgressBar .col{
+      padding: 0px;
+    }
+
     .playerProgressBar span:first-child {
       color: #F54997;
     }
-
+    .player .row {
+      margin-left: 0px !important;
+      margin-right: 0px !important;
+    }
 
     ion-footer-bar .row {
-      padding: 5px !important;
+      padding: 0px !important;
       margin: 5px !important;
       text-align: center;
     }
     .news-information-date {
-      color: #bbb;
+      color: #777;
     }
     .news-information-flow {
       color: #eee;
@@ -103,7 +115,7 @@
       display: block;
     }
     .news-item i.ion-radio-waves-play {
-      font-size: 30px;
+      font-size: 35px;
     }
     .news-item.onAir i.ion-radio-waves-play {
       color: #F54997;
@@ -120,7 +132,7 @@
       border-top-width: 0px !important;
       border-bottom-width: 0px !important;
     }
-    i.ion-settings {
+    i.ion-android-options {
         font-size: 30px;
     }
     .title-image {
@@ -156,8 +168,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      margin-left: 5px !important;
+      margin-right: 5px !important;
     }
 
+    /* Remove the blank pixel in front of the slider's ball*/
+    .range input::-webkit-slider-thumb:before {
+      left: -2000px;
+    }
   </style>
   <!--<body ng-controller="HomeCtrl" ng-class="{'testPlnCss': testPln}">-->
   <body ng-controller="HomeCtrl" ng-class="{'bar-player-away': isPlayerAway()}">

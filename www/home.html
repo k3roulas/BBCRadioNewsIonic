@@ -5,7 +5,7 @@
             <span class="title-text">Radio News</span>
         </h1>
           <button ui-sref="config" class="button button-clear">
-              <i class="ion-settings larger-icon"></i>
+              <i class="ion-android-options larger-icon"></i>
           </button>
       </ion-header-bar>
 
@@ -54,14 +54,13 @@
       </ion-content>
     </ion-pane>
 
-    <ion-footer-bar class="bar-stable" ng-show="playerStatus == 'pause' || playerStatus == 'play'">
-        <div class="row playerProgressBar" ng-show="!player.canPlay">
-            <div class="col">
-                <!--Loading-->
-            <ion-spinner icon="ios"></ion-spinner>
+    <ion-footer-bar class="bar-stable player" ng-show="playerStatus == 'pause' || playerStatus == 'play'">
+        <div class="playerProgressBar row" ng-show="!player.canPlay">
+            <div class="col spinner">
+                <ion-spinner icon="ios"></ion-spinner>
             </div>
         </div>
-        <div class="playerProgressBar range range-positive" ng-show="player.canPlay">
+        <div class="playerProgressBar row range range-positive" ng-show="player.canPlay">
             <!--CurrentTime -->
             <span class="">
                 {{player.currentTime | trackTime}}
@@ -72,7 +71,7 @@
                 {{player.duration | trackTime}}
             </span>
         </div>
-        <div class="row">
+        <div class="row" id ="pln">
             <!--<button class="button col " ng-show="playerStatus == 'pause'" ng-click="unPause()">play</button>-->
             <!--<button class="button col " ng-show="playerStatus == 'play'" ng-click="pause()">pause</button>-->
             <!--<button class="button col " ng-click="stop()">stop</button>-->
