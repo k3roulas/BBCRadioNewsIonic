@@ -19,7 +19,7 @@
           <ion-list>
               <ion-item ng-repeat="news in newsContainer.news track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
 
-                      <div class="row">
+                      <div class="row" ng-click="play(news)">
                           <div class="col-center">
                               <img class="news-information-chanel {{news.class}}" />
                           </div>
@@ -43,7 +43,7 @@
                           </div>
 
                           <div class="col-center">
-                              <button class="button button-clear button-dark center-content" ng-click="play(news)">
+                              <button class="button button-clear button-dark center-content">
                                   <i class="ion-radio-waves-play"></i>
                               </button>
                           </div>
@@ -71,13 +71,12 @@
                 {{player.duration | trackTime}}
             </span>
         </div>
-        <div class="row" id ="pln">
-            <!--<button class="button col " ng-show="playerStatus == 'pause'" ng-click="unPause()">play</button>-->
-            <!--<button class="button col " ng-show="playerStatus == 'play'" ng-click="pause()">pause</button>-->
-            <!--<button class="button col " ng-click="stop()">stop</button>-->
-            <button class="button col button-clear button-dark" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-ios-play-outline"></i></button>
-            <button class="button col button-clear button-dark" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-ios-pause-outline"></i></button>
+        <div class="row">
+            <button class="button col button-clear button-dark" ng-click="rewind()"> <i class="icon ion-ios-rewind"></i></button>
             <button class="button col button-clear button-dark" ng-click="stop()"><i class="icon ion-stop"></i></button>
+            <button class="button col button-clear button-dark" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-ios-pause"></i></button>
+            <button class="button col button-clear button-dark" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-ios-play"></i></button>
+            <button class="button col button-clear button-dark" ng-click="forward()"> <i class="icon ion-ios-fastforward"></i></button>
         </div>
 
     </ion-footer-bar>

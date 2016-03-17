@@ -1,5 +1,5 @@
 var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova']);
-var develop = true;
+var develop = false;
 
 app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -114,6 +114,24 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
             $scope.player.pause();
         }
     };
+
+    $scope.rewind = function() {
+        if ($scope.player != null) {
+            $scope.player.setCurrentTime(
+                Math.max($scope.player.currentTime - 30, 0)
+            );
+        }
+    };
+
+    $scope.forward = function() {
+        if ($scope.player != null) {
+            $scope.player.setCurrentTime(
+                Math.min($scope.player.currentTime + 30, $scope.player.duration)
+            );
+        }
+    };
+
+
 
     // test function todo delete
     $scope.pln = function(src) {
