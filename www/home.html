@@ -1,27 +1,26 @@
     <ion-pane>
+
       <ion-header-bar class="bar-stable bar-header">
         <h1 class="title">
-            <img class="title-image" src="img/bbc-blocks-light.png" ng-click="pln()">
+            <img class="logo" src="img/bbc-blocks-light.png" ng-click="pln()">
             <span class="title-text">Radio News</span>
         </h1>
           <button ui-sref="config" class="button button-clear">
-              <i class="ion-android-options larger-icon"></i>
+              <i class="ion-more larger-icon config-icon"></i>
           </button>
       </ion-header-bar>
 
 
-
       <ion-content delegate-handle="pullToRefreshContent">
 
-
-          <ion-refresher on-refresh="refresh()"></ion-refresher>
+          <ion-refresher on-refresh="refresh()" spinner="ios"></ion-refresher>
 
           <ion-list>
               <ion-item ng-repeat="news in newsContainer.news track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
 
                       <div class="row" ng-click="play(news)">
-                          <div class="col-center">
-                              <img class="news-information-chanel {{news.class}}" />
+                          <div class="col-center col-icon">
+                              <img class="news-information-chanel {{news.class}} center-content" />
                           </div>
                           <div class="col-expand">
                               <div class="row news-information-row">
@@ -29,7 +28,7 @@
                                   {{news.flow}}
                                 </span>
                                 <span class="news-information-date-separator">
-                                       -
+                                       &nbsp;-&nbsp;
                                 </span>
                                 <span class="news-information-date">
                                     {{news.theDate | date:'EEE'}}
@@ -42,11 +41,11 @@
                               </div>
                           </div>
 
-                          <div class="col-center">
-                              <button class="button button-clear button-dark center-content">
-                                  <i class="ion-radio-waves-play"></i>
-                              </button>
-                          </div>
+                          <!--<div class="col-center col-icon">-->
+                              <!--<span class=="center-content">-->
+                                  <!--<i class="ion-radio-waves-play"></i>-->
+                              <!--</span>-->
+                          <!--</div>-->
                       </div>
 
               </ion-item>
@@ -55,12 +54,12 @@
     </ion-pane>
 
     <ion-footer-bar class="bar-stable player" ng-show="playerStatus == 'pause' || playerStatus == 'play'">
-        <div class="playerProgressBar row" ng-show="!player.canPlay">
+        <div class="player-progress-bar row" ng-show="!canPlay()">
             <div class="col spinner">
                 <ion-spinner icon="ios"></ion-spinner>
             </div>
         </div>
-        <div class="playerProgressBar row range range-positive" ng-show="player.canPlay">
+        <div class="player-progress-bar row range range-positive" ng-show="canPlay()">
             <!--CurrentTime -->
             <span class="">
                 {{player.currentTime | trackTime}}

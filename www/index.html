@@ -9,8 +9,7 @@
     <meta http-equiv="Content-Security-Policy"
           content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 
-    <title></title>
-
+    <title>BBC Radio news</title>
 
     <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -21,246 +20,21 @@
     <script src="lib/x2js/xml2json.min.js"></script>
     <script src="lib/angular-xml/angular-xml.min.js"></script>
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
-    <!--<script src="lib/cordova-promise-fs/dist/CordovaPromiseFS.js"></script>-->
 
       <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
-    <!-- your app's js -->
 
     <script src="js/app.js"></script>
     <script src="js/services.js"></script>
+    <script src="js/http-throttler.js"></script>
 
   </head>
 
-
-  <style>
-    /*CF http://stackoverflow.com/questions/26938021/angular-ng-if-or-ng-show-responds-slow-2second-delay*/
-    .ng-hide.ng-hide-animate{
-      display: none !important;
-    }
-    /*.BBCRadio4 {*/
-      /*background-color: #002C5F;*/
-      /*color: #ffffff;*/
-    /*}*/
-    /*.GlobalNewsPodcast {*/
-      /*background-color: #991B1E;*/
-      /*color: #ffffff;*/
-    /*}*/
-    .playerProgressBar {
-      height: 45px !important;
-      text-align: center;
-
-    }
-    .playerProgressBar .spinner{
-      padding-top: 10px;
-    }
-    .playerProgressBar .col{
-      padding: 0px;
-    }
-
-    .playerProgressBar span:first-child {
-      color: #F54997;
-    }
-    .player .row {
-      margin-left: 0px !important;
-      margin-right: 0px !important;
-    }
-
-    ion-footer-bar .row {
-      padding: 0px !important;
-      margin: 5px !important;
-      text-align: center;
-    }
-    .news-information-date {
-      color: #777;
-    }
-    .news-information-flow {
-      color: #eee;
-    }
-    .news-information-label {
-      color: #bbb;
-    }
-    .news-item {
-      padding: 7px !important;
-    }
-
-    .news-item .row {
-      padding: 0px !important;
-      margin: 0px !important;
-    }
-    .news-item .col {
-      padding: 0px !important;
-      margin: 0px !important;
-    }
-    .BBCRadio4 img {
-      width: 32px;
-      height: 32px;
-      content: url(img/icons/4.png);
-      margin: -1px 4px 0px 0px;
-    }
-    .GlobalNewsPodcast img {
-      width: 32px;
-      height: 32px;
-      content: url(img/icons/bbc-world-news-2.png);
-      margin: -1px 4px 0px 0px;
-    }
-    .news-information-chanel img {
-      width: 21px;
-      height: 21px;
-    }
-    .center-content {
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
-    }
-    .news-item i.ion-radio-waves-play {
-      font-size: 35px;
-    }
-    .news-item.onAir i.ion-radio-waves-play {
-      color: #F54997;
-    }
-
-    .col-img {
-      width: 50px;
-    }
-    /*.item p {*/
-        /*font-size: 12px !important;*/
-        /*color: #bbb;*/
-    /*}*/
-    .item {
-      border-top-width: 0px !important;
-      border-bottom-width: 0px !important;
-    }
-    i.ion-android-options {
-        font-size: 30px;
-    }
-    .title-image {
-      margin-top: 9px;
-    }
-    .title-text {
-      vertical-align: top;
-      /*color: #bbb;*/
-    }
-
-    ion-header-bar {
-      border-bottom-width: 0px !important;
-    }
-    /*.button.button-clear {*/
-      /*color: #bbb !important;*/
-    /*}*/
-    /*PLN TODO : dry colors*/
-    /*.bar {*/
-      /*color: #bbb ! important;*/
-    /*}*/
-    /*.bar.bar-stable {*/
-      /*color: #bbb ! important;*/
-    /*}*/
-    .range input::-ms-thumb {
-      background-color: red !important;
-    }
-    /*.onAir {*/
-      /*background-color: red !important;*/
-    /*}*/
-
-    .col-expand {
-      width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      margin-left: 5px !important;
-      margin-right: 5px !important;
-    }
-
-    /* Remove the blank pixel in front of the slider's ball*/
-    .range input::-webkit-slider-thumb:before {
-      left: -2000px;
-    }
-  </style>
-  <!--<body ng-controller="HomeCtrl" ng-class="{'testPlnCss': testPln}">-->
-  <body ng-controller="HomeCtrl" ng-class="{'bar-player-away': isPlayerAway()}">
+  <body ng-controller="BBCCtrl">
 
     <ion-nav-view>
-
-        <!--<ion-pane>-->
-        <!--<ion-header-bar class="bar-stable">-->
-        <!--<h1 class="title">BBC Radio 4 News <button ng-click="refresh()">Refresh</button> - <button ng-click="config()">Config</button></h1>-->
-        <!--</ion-header-bar>-->
-
-        <!--<ion-header-bar class="bar-subheader">-->
-        <!--<div class="row">-->
-        <!--<button class="button col-50" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>-->
-        <!--<button class="button col-50" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-pause"></i>Pause</button>-->
-        <!--<button class="button col-50" ng-click="stop()"><i class="icon ion-stop"></i>Stop</button>-->
-        <!--</div>-->
-        <!--CurrentTime : {{player.currentTime | trackTime}} - Duration : {{player.duration | trackTime}}-->
-        <!--<div class="row range">-->
-        <!--<input class='form-control' type=range min=0 max=1 step=0.01 ng-model='player.progress'>-->
-        <!--</div>-->
-
-        <!--</ion-header-bar>-->
-
-        <!--<ion-content>-->
-        <!--<ion-list>-->
-        <!--<ion-item ng-repeat="news in newsList track by $index" >-->
-
-        <!--<div ng-show="isOnAir(news)">On Air</div>-->
-        <!--&lt;!&ndash;{{news.theDate | date:'medium'}}&ndash;&gt;-->
-        <!--&lt;!&ndash;{{news.theDate | date:'EEEE h:mm'}} &ndash;&gt;-->
-        <!--{{news.theDate | date:'EEEE'}} --->
-        <!--{{news.rssLabel}}-->
-
-
-        <!--<button class="" ng-click="play('{{news.url}}')">-->
-        <!--<i class="ion-music-note"></i>-->
-        <!--</button>-->
-
-
-        <!--</ion-item>-->
-        <!--</ion-list>-->
-        <!--</ion-content>-->
-        <!--</ion-pane>-->
-
-
     </ion-nav-view>
 
-    <!--<ion-pane>-->
-      <!--<ion-header-bar class="bar-stable">-->
-        <!--<h1 class="title">BBC Radio 4 News <button ng-click="refresh()">Refresh</button> - <button ng-click="config()">Config</button></h1>-->
-      <!--</ion-header-bar>-->
-
-      <!--<ion-header-bar class="bar-subheader">-->
-            <!--<div class="row">-->
-                <!--<button class="button col-50" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>-->
-                <!--<button class="button col-50" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-pause"></i>Pause</button>-->
-                <!--<button class="button col-50" ng-click="stop()"><i class="icon ion-stop"></i>Stop</button>-->
-            <!--</div>-->
-            <!--CurrentTime : {{player.currentTime | trackTime}} - Duration : {{player.duration | trackTime}}-->
-            <!--<div class="row range">-->
-                <!--<input class='form-control' type=range min=0 max=1 step=0.01 ng-model='player.progress'>-->
-            <!--</div>-->
-
-        <!--</ion-header-bar>-->
-
-      <!--<ion-content>-->
-          <!--<ion-list>-->
-              <!--<ion-item ng-repeat="news in newsList track by $index" >-->
-
-                  <!--<div ng-show="isOnAir(news)">On Air</div>-->
-                  <!--&lt;!&ndash;{{news.theDate | date:'medium'}}&ndash;&gt;-->
-                  <!--&lt;!&ndash;{{news.theDate | date:'EEEE h:mm'}} &ndash;&gt;-->
-                  <!--{{news.theDate | date:'EEEE'}} --->
-                  <!--{{news.rssLabel}}-->
-
-
-                  <!--<button class="" ng-click="play('{{news.url}}')">-->
-                    <!--<i class="ion-music-note"></i>-->
-                  <!--</button>-->
-
-
-              <!--</ion-item>-->
-          <!--</ion-list>-->
-      <!--</ion-content>-->
-    <!--</ion-pane>-->
   </body>
 </html>

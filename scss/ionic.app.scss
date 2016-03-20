@@ -15,58 +15,186 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
-$main-gray:                       #bbb !default;
-$light-gray:                      #333 !default;
-$bbc-pink:                        #F54997 !default;
+// BBC colors
+$bbc-text:                       #bbb !default;
+$bbc-text-clear:                 #eee !default;
+$bbc-background:                  #333 !default;
+$bbc-highlight:                   #F54997 !default;
 
 
-$light:                           $light-gray;
+// Setup framework colors
+$light:                           $bbc-background;
 $stable:                          #191919 !default;
-$positive:                        $bbc-pink;
+$positive:                        $bbc-highlight;
 $calm:                            #11c1f3 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
-$dark:                            $main-gray;
+$dark:                            $bbc-text;
 
-$base-background-color:           $light-gray !default;
-$base-color:                      $main-gray;
+$base-background-color:           $bbc-background !default;
+$base-color:                      $bbc-text;
+$button-light-text:               $bbc-text;
+$button-stable-text:              $bbc-text;
+$toggle-handle-off-bg-color:      $bbc-highlight;
+$checkbox-off-bg-color:           $bbc-text;
 
-//$button-light-text:               #bbb !important;
-
-$button-light-text:               $main-gray;
-$button-stable-text:              $main-gray;
-$toggle-handle-off-bg-color:      $bbc-pink;
-$checkbox-off-bg-color:           $main-gray;
-
-
+// Add a new icon
 $ionicons-prefix: ion- !default;
 $ionicon-var-radio-waves-play: "\f2bb";
 .#{$ionicons-prefix}radio-waves-play:before {
   @extend .ion;
 }
 .#{$ionicons-prefix}radio-waves-play:before { content: $ionicon-var-radio-waves-play; }
-
-//#EEE
-
-// The path for our ionicons font files, relative to the built CSS in www/css
-//$ionicons-font-path: "../lib/ionic/fonts" !default;
 $ionicons-font-path: "../fonts" !default;
 
+// Footer
 $bar-footer-height: 120px;
-
-
-//title
-//bar-stable
-
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
 
 
-// Footer at bottom
+// Use a variable for text instead of default framework color (#666)
+.item p {
+  color: $bbc-text;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+
+/* CF http://stackoverflow.com/questions/26938021/angular-ng-if-or-ng-show-responds-slow-2second-delay */
+.ng-hide.ng-hide-animate{
+  display: none !important;
+}
+
+
+//
+// Helpers
+//
+.center-content {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+//
+// Common
+//
+
+// remove shadow border
+.bar.bar-stable {
+  border: 0px !important;
+  border-bottom-color: transparent !important;
+  background-image: none !important;
+  border-bottom: none !important;
+}
+
+//
+// Header
+//
+
+.config-icon {
+  font-size: 30px;
+}
+
+//
+// Item list
+//
+
+.item {
+  border-top-width: 0px !important;
+  border-bottom-width: 0px !important;
+}
+
+.news-item {
+  padding: 15px 7px 15px 7px;
+  .row {
+    padding: 0px !important;
+    margin: 0px !important;
+  }
+  .col {
+    padding: 0px !important;
+    margin: 0px !important;
+  }
+  &i.ion-radio-waves-play {
+    font-size: 35px;
+  }
+  &.onAir  {
+    background-color: $bbc-highlight;
+  }
+}
+
+.news-information-date {
+  color: $bbc-text;
+}
+.news-information-flow {
+  color: $bbc-text-clear;
+}
+.news-information-label {
+  color: $bbc-text;
+}
+
+
+// Channel images
+.BBCRadio4 img {
+  width: 32px;
+  height: 32px;
+  content: url(../img/icons/4.png);
+  /*margin: -1px 4px 0px 0px;*/
+}
+.GlobalNewsPodcast img {
+  width: 32px;
+  height: 32px;
+  content: url(../img/icons/bbc-world-news-2.png);
+}
+
+.news-information-chanel img {
+  width: 21px;
+  height: 21px;
+}
+
+
+.col-icon {
+  min-width: 35px;
+  display: block;
+}
+
+.col-img {
+  width: 50px;
+}
+
+
+.logo {
+  margin-top: 9px;
+}
+
+.title-text {
+  vertical-align: top;
+}
+
+.col-expand {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+
+// Remove the blank pixel in front of the slider's ball
+.range input::-webkit-slider-thumb:before {
+  left: -2000px;
+}
+
+
+
+//
+// Footer
+//
+
 .bar-footer {
   flex-direction: column;
   bottom: 0;
@@ -83,9 +211,27 @@ $bar-footer-height: 120px;
 }
 
 
+.player-progress-bar {
+  height: 45px !important;
+  text-align: center;
+  &spinner {
+    padding-top: 10px;
+  }
+  &.col {
+    padding: 0px;
+  }
+  &span:first-child {
+    color: $bbc-highlight;
+  }
+}
 
-.item p {
-  color: $main-gray;
-  font-size: 14px;
-  margin-bottom: 2px;
+.player .row {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+ion-footer-bar .row {
+  padding: 0px !important;
+  margin: 5px !important;
+  text-align: center;
 }

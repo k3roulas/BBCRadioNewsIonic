@@ -71,15 +71,18 @@ app.service('appConfig', ['store', function(store) {
             {
                 source : 'BBC Radio 4',
                 rssFlows : [
-                    { url : prefix + '/programmes/b006qtl3/episodes/downloads.rss', max: 7, label: "The world tonight", dayWeight: 124, enabled: true },
-                    { url : prefix + '/programmes/b006qjxt/episodes/downloads.rss', max: 7, label: "The six o'clock", dayWeight: 118, enabled: true },
-                    { url : prefix + '/programmes/b006qptc/episodes/downloads.rss', max: 7, label: "World at one", dayWeight: 113, enabled: true },
+                    { url : prefix + '/programmes/b006qtl3/episodes/downloads.rss', max: 5, label: "The world tonight", dayWeight: 124, enabled: true },
+                    { url : prefix + '/programmes/b006qjxt/episodes/downloads.rss', max: 5, label: "The six o'clock", dayWeight: 118, enabled: true },
+                    { url : prefix + '/programmes/b006qptc/episodes/downloads.rss', max: 5, label: "World at one", dayWeight: 113, enabled: true },
+                    { url : prefix + '/programmes/p02nrtvg/episodes/downloads.rss', max: 5, label: "Best of today", dayWeight: 105, enabled: true },
                 ]
             },
             {
                 source : 'Global News Podcast',
                 rssFlows : [
-                    { url : prefix + '/programmes/p02nq0gn/episodes/downloads.rss', max: 14, label: "Global News Podcast", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/p02nq0gn/episodes/downloads.rss', max: 10, label: "Global news podcast", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/p02nrsmt/episodes/downloads.rss', max: 5, label: "Daily commute", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/p0299wgd/episodes/downloads.rss', max: 2, label: "The world this week", dayWeight: 105, enabled: true },
                 ]
             }
         ]
@@ -92,20 +95,27 @@ app.service('appConfig', ['store', function(store) {
             store.save('config', defaultConfig);
         }
         this.config = config;
+        //this.config = defaultConfig;
     }
 
 }]);
 
-app.service('newsProvider', ['$http', 'x2js', '$q', 'store', 'appConfig', '$rootScope', function($http, x2js, $q, store, appConfig, $rootScope) {
+app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appConfig', '$rootScope', 'httpThrottler', function($timeout, $http, x2js, $q, store, appConfig, $rootScope, httpThrottler) {
 
+    // Load from storage
+    var news = store.load('news');
+    if (null === news) {
+        news = [];
+    }
     this.newsContainer = {
-        news: []
+        news: news
     };
 
     this.refresh = function(auto) {
 
         var newsList = [];
         var promises = [];
+        httpThrottler.setMaxConcurrentRequests(1);
 
         // Create a closure to embed the rss and source in the response
         var success = function (rss, source) {
@@ -145,6 +155,8 @@ app.service('newsProvider', ['$http', 'x2js', '$q', 'store', 'appConfig', '$root
                 }
             }
         };
+
+
 
 
         var podcasts = appConfig.config.podcasts;
@@ -188,8 +200,8 @@ app.service('newsProvider', ['$http', 'x2js', '$q', 'store', 'appConfig', '$root
                 return bDate - aDate;
             });
 
-            newsContainer.news = newList;
             console.log(newList);
+            newsContainer.news = newList;
             store.save('news', newList);
 
         });
@@ -197,5 +209,7 @@ app.service('newsProvider', ['$http', 'x2js', '$q', 'store', 'appConfig', '$root
 
 
 }]);
+
+
 
 

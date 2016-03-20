@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.bbcradionews871451" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <access origin="*" />
-  <allow-intent href="*" />
-  <allow-navigation href="*" />
-  <name>BBCRadioNewsIonic</name>
+  <access origin="*"/>
+  <access origin="*"/>
+  <allow-intent href="*"/>
+  <allow-navigation href="*"/>
+  <name>BBC Radio News</name>
   <description>
         An Ionic Framework and Cordova project.
     </description>
@@ -11,13 +12,19 @@
       Ionic Framework Team
     </author>
   <content src="index.html"/>
-  <access origin="*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="BackupWebStorage" value="none"/>
+  <preference name="ShowSplashScreen" value="true"/>
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="3000"/>
+  <preference name="AutoHideSplashScreen" value="true"/>
+  <preference name="SplashShowOnlyFirstTime" value="false"/>
+  <preference name="FadeSplashScreen" value="false"/>
+  <feature name="SplashScreen">
+    <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen"/>
+  </feature>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
@@ -41,4 +48,5 @@
     <splash src="resources/android/splash/drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
     <splash src="resources/android/splash/drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
+  <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>

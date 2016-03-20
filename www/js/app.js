@@ -1,4 +1,4 @@
-var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova']);
+var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova', 'http-throttler']);
 var develop = false;
 
 app.run(function($ionicPlatform) {
@@ -15,8 +15,9 @@ app.run(function($ionicPlatform) {
   });
 });
 
+
 app.config(
-    function($stateProvider, $urlRouterProvider) {
+    function($stateProvider, $urlRouterProvider, $httpProvider) {
 
         $urlRouterProvider.otherwise('/');
         $stateProvider.state('home', {
@@ -27,10 +28,13 @@ app.config(
             url: '/config',
             templateUrl: 'config.html'
         });
-});
+
+        $httpProvider.interceptors.push('httpThrottler');
+
+    });
 
 
-app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile, store, pullToRefreshService, $ionicScrollDelegate, $cordovaMedia, newsProvider, appConfig) {
+app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $http, $q, x2js, $cordovaFileTransfer, $cordovaFile, store, pullToRefreshService, $ionicScrollDelegate, $cordovaMedia, newsProvider, appConfig) {
 
     $scope.player = null;
     $scope.onAirUrl = null;
@@ -54,18 +58,12 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
     }, true);
 
 
-    // Load saved news
-    var list = store.load('news');
-    if (list !== null) {
-        $scope.newsList = list;
-    }
-
     // On loading, refresh news
     $scope.$on('$stateChangeSuccess',
         function(event, toState, toParams, fromState, fromParams){
             if (toState.url == '/') {
-                // Use a service to force the usage of the ionic pull to refresh feature
-                pullToRefreshService.triggerPtr('pullToRefreshContent');
+                // Schedule 1/4 second the use a service to force the usage of the ionic pull to refresh feature
+                $timeout(function() {pullToRefreshService.triggerPtr('pullToRefreshContent')}, 200);
             }
         }
     );
@@ -131,14 +129,10 @@ app.controller('HomeCtrl',  function($scope, $ionicPlatform, ngAudio, $http, $q,
         }
     };
 
-
-
-    // test function todo delete
-    $scope.pln = function(src) {
-
-        pullToRefreshService.triggerPtr('pullToRefreshContent');
-        $scope.refresh('auto');
-
+    $scope.canPlay = function() {
+        if ($scope.player) {
+            return $scope.player.canPlay && ($scope.player.duration != 0);
+        }
     };
 
 
