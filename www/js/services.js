@@ -67,35 +67,39 @@ app.service('appConfig', ['store', function(store) {
     }
 
     var defaultConfig =  {
+        version : '1.0',
         podcasts : [
             {
                 source : 'BBC Radio 4',
                 rssFlows : [
-                    { url : prefix + '/programmes/b006qtl3/episodes/downloads.rss', max: 5, label: "The world tonight", dayWeight: 124, enabled: true },
-                    { url : prefix + '/programmes/b006qjxt/episodes/downloads.rss', max: 5, label: "The six o'clock", dayWeight: 118, enabled: true },
-                    { url : prefix + '/programmes/b006qptc/episodes/downloads.rss', max: 5, label: "World at one", dayWeight: 113, enabled: true },
-                    { url : prefix + '/programmes/p02nrtvg/episodes/downloads.rss', max: 5, label: "Best of today", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/b006qtl3/episodes/downloads.rss', max: 4, label: "The world tonight", dayWeight: 124, enabled: true },
+                    { url : prefix + '/programmes/b006qjxt/episodes/downloads.rss', max: 4, label: "The six o'clock", dayWeight: 118, enabled: true },
+                    { url : prefix + '/programmes/b006qptc/episodes/downloads.rss', max: 4, label: "World at one", dayWeight: 113, enabled: true },
+                    { url : prefix + '/programmes/p02nrtvg/episodes/downloads.rss', max: 4, label: "Best of today", dayWeight: 105, enabled: true },
                 ]
             },
             {
                 source : 'Global News Podcast',
                 rssFlows : [
-                    { url : prefix + '/programmes/p02nq0gn/episodes/downloads.rss', max: 10, label: "Global news podcast", dayWeight: 105, enabled: true },
-                    { url : prefix + '/programmes/p02nrsmt/episodes/downloads.rss', max: 5, label: "Daily commute", dayWeight: 105, enabled: true },
-                    { url : prefix + '/programmes/p0299wgd/episodes/downloads.rss', max: 2, label: "The world this week", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/p02nq0gn/episodes/downloads.rss', max: 8, label: "Global news podcast", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/p02nrsmt/episodes/downloads.rss', max: 4, label: "Daily commute", dayWeight: 105, enabled: true },
+                    { url : prefix + '/programmes/p0299wgd/episodes/downloads.rss', max: 1, label: "The world this week", dayWeight: 105, enabled: true },
                 ]
             }
         ]
     };
 
     this.config = {};
+
     this.load = function() {
-        var config = store.load('config');
-        if (config === null) {
-            store.save('config', defaultConfig);
-        }
-        this.config = config;
-        //this.config = defaultConfig;
+        this.config = defaultConfig;
+        //var config = store.load('config');
+        //if (config === null) {
+        //    this.config = defaultConfig;
+        //    store.save('config', this.config);
+        //} else {
+        //    this.config = config;
+        //}
     }
 
 }]);
@@ -115,10 +119,17 @@ app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appCon
 
         var newsList = [];
         var promises = [];
-        httpThrottler.setMaxConcurrentRequests(1);
+
+        // The app need some air to breath
+        // Will be revert at the end of the refresh
+        httpThrottler.setMaxConcurrentRequests(2);
+
+        if (typeof analytics !== 'undefined') {
+            analytics.trackEvent('User', 'Refresh')
+        }
 
         // Create a closure to embed the rss and source in the response
-        var success = function (rss, source) {
+        var success = function (rss, source, theRss) {
 
             var localRss = rss;
             var localSource = source;
@@ -130,7 +141,7 @@ app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appCon
 
                 for (var itemPos = 0; itemPos < items.length; itemPos++) {
 
-                    // keep only the first
+                    // keep only the max
                     if (itemPos == localRss.max) {
                         break;
                     }
@@ -149,15 +160,10 @@ app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appCon
                             class: localSource.replace(/ /g, ""),
                             flow: localRss.label,
                             progress: 0
-                        }
-                    )
-
+                        })
                 }
             }
         };
-
-
-
 
         var podcasts = appConfig.config.podcasts;
         for (var podCastEnum = 0; podCastEnum < podcasts.length; podCastEnum++) {
@@ -175,8 +181,11 @@ app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appCon
                             success(theRss, podcast.source),
                             // Error
                             function (error) {
-                                alert(JSON.stringify(error));
-                                // todo
+
+                                if (typeof analytics !== 'undefined') {
+                                    analytics.trackEvent('Error', 'Refresh', theRss.label, error.status);
+                                }
+
                             }
                         )
                     );
@@ -200,11 +209,14 @@ app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appCon
                 return bDate - aDate;
             });
 
-            console.log(newList);
             newsContainer.news = newList;
+
             store.save('news', newList);
 
         });
+
+        // Disable the throttler
+        httpThrottler.setMaxConcurrentRequests(25);
     }
 
 
