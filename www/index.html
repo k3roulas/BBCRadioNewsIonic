@@ -4,16 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
 
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    <!--<meta http-equiv="Content-Security-Policy" -->
+          <!--content="default-src 'self' yourhost.com ws://localhost:35729 data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *;script-src 'self' localhost:35729 'unsafe-eval' 'unsafe-inline';">-->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 
-    <title></title>
+    <title>BBC Radio news</title>
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
-    -->
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -21,98 +20,23 @@
     <script src="lib/x2js/xml2json.min.js"></script>
     <script src="lib/angular-xml/angular-xml.min.js"></script>
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
-    <script src="lib/cordova-promise-fs/dist/CordovaPromiseFS.js"></script>
 
       <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
-    <!-- your app's js -->
+
     <script src="js/app.js"></script>
+    <script src="js/parameters.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/http-throttler.js"></script>
 
   </head>
-  <!--<body ng-controller="HomeCtrl" ng-class="{'testPlnCss': testPln}">-->
-  <body ng-controller="HomeCtrl" ng-class="{'bar-player-away': isPlayerAway()}">
+
+
+  <body ng-controller="BBCCtrl">
 
     <ion-nav-view>
-
-        <!--<ion-pane>-->
-        <!--<ion-header-bar class="bar-stable">-->
-        <!--<h1 class="title">BBC Radio 4 News <button ng-click="refresh()">Refresh</button> - <button ng-click="config()">Config</button></h1>-->
-        <!--</ion-header-bar>-->
-
-        <!--<ion-header-bar class="bar-subheader">-->
-        <!--<div class="row">-->
-        <!--<button class="button col-50" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>-->
-        <!--<button class="button col-50" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-pause"></i>Pause</button>-->
-        <!--<button class="button col-50" ng-click="stop()"><i class="icon ion-stop"></i>Stop</button>-->
-        <!--</div>-->
-        <!--CurrentTime : {{player.currentTime | trackTime}} - Duration : {{player.duration | trackTime}}-->
-        <!--<div class="row range">-->
-        <!--<input class='form-control' type=range min=0 max=1 step=0.01 ng-model='player.progress'>-->
-        <!--</div>-->
-
-        <!--</ion-header-bar>-->
-
-        <!--<ion-content>-->
-        <!--<ion-list>-->
-        <!--<ion-item ng-repeat="news in newsList track by $index" >-->
-
-        <!--<div ng-show="isOnAir(news)">On Air</div>-->
-        <!--&lt;!&ndash;{{news.theDate | date:'medium'}}&ndash;&gt;-->
-        <!--&lt;!&ndash;{{news.theDate | date:'EEEE h:mm'}} &ndash;&gt;-->
-        <!--{{news.theDate | date:'EEEE'}} --->
-        <!--{{news.rssLabel}}-->
-
-
-        <!--<button class="" ng-click="play('{{news.url}}')">-->
-        <!--<i class="ion-music-note"></i>-->
-        <!--</button>-->
-
-
-        <!--</ion-item>-->
-        <!--</ion-list>-->
-        <!--</ion-content>-->
-        <!--</ion-pane>-->
-
     </ion-nav-view>
 
-    <!--<ion-pane>-->
-      <!--<ion-header-bar class="bar-stable">-->
-        <!--<h1 class="title">BBC Radio 4 News <button ng-click="refresh()">Refresh</button> - <button ng-click="config()">Config</button></h1>-->
-      <!--</ion-header-bar>-->
-
-      <!--<ion-header-bar class="bar-subheader">-->
-            <!--<div class="row">-->
-                <!--<button class="button col-50" ng-show="playerStatus == 'pause'" ng-click="unPause()"> <i class="icon ion-play"></i>Play</button>-->
-                <!--<button class="button col-50" ng-show="playerStatus == 'play'" ng-click="pause()"><i class="icon ion-pause"></i>Pause</button>-->
-                <!--<button class="button col-50" ng-click="stop()"><i class="icon ion-stop"></i>Stop</button>-->
-            <!--</div>-->
-            <!--CurrentTime : {{player.currentTime | trackTime}} - Duration : {{player.duration | trackTime}}-->
-            <!--<div class="row range">-->
-                <!--<input class='form-control' type=range min=0 max=1 step=0.01 ng-model='player.progress'>-->
-            <!--</div>-->
-
-        <!--</ion-header-bar>-->
-
-      <!--<ion-content>-->
-          <!--<ion-list>-->
-              <!--<ion-item ng-repeat="news in newsList track by $index" >-->
-
-                  <!--<div ng-show="isOnAir(news)">On Air</div>-->
-                  <!--&lt;!&ndash;{{news.theDate | date:'medium'}}&ndash;&gt;-->
-                  <!--&lt;!&ndash;{{news.theDate | date:'EEEE h:mm'}} &ndash;&gt;-->
-                  <!--{{news.theDate | date:'EEEE'}} --->
-                  <!--{{news.rssLabel}}-->
-
-
-                  <!--<button class="" ng-click="play('{{news.url}}')">-->
-                    <!--<i class="ion-music-note"></i>-->
-                  <!--</button>-->
-
-
-              <!--</ion-item>-->
-          <!--</ion-list>-->
-      <!--</ion-content>-->
-    <!--</ion-pane>-->
   </body>
 </html>

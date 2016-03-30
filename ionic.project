@@ -1,14 +1,19 @@
 {
-    "name": "BBCRadioNewsIonic",
-    "app_id": "",
-    "proxies": [
+  "name": "BBCRadioNewsIonic",
+  "app_id": "",
+  "proxies": [
     {
-        "path": "/programmes",
-        "proxyUrl": "http://www.bbc.co.uk/programmes"
-    },
-    {
-        "path": "/mediaselector",
-        "proxyUrl": "http://open.live.bbc.co.uk/mediaselector"
+      "path": "/programmes",
+      "proxyUrl": "http://www.bbc.co.uk/programmes"
     }
-]
+  ],
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ],
+  "defaultBrowser": "chrome"
 }
