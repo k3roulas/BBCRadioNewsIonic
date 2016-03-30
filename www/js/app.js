@@ -1,5 +1,5 @@
 var app = angular.module('BBCRadioNews', ['ionic', 'ngAudio', 'xml', 'ngCordova', 'http-throttler']);
-var develop = true;
+var develop = false;
 
 app.run(function($ionicPlatform, TrackingCode) {
 
@@ -88,7 +88,7 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
     }, true);
 
 
-    //// TODO : define if the initialisation of promiseFS has to be done here
+    // TODO : define if the initialisation of promiseFS has to be done here
     var fs = CordovaPromiseFS({
         persistent: true, // or false
         storageSize: 50*1024*1024, // storage size in bytes, default 20MB
@@ -200,21 +200,21 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
     $scope.downloaded = function() {
         console.log(this.news);
         this.news.downloaded = !(this.news.downloaded);
-    }
+    };
 
-    $scope.download = function () {
+    $scope.download = function (news) {
 
         // Todo check free space -> alert($cordovaFile.getFreeDiskSpace());
 
-
-        var filename = this.news.url.split(/[\\/]/).pop();
+        var filename = news.url.split(/[\\/]/).pop();
         var directory = 'audioFiles';
         var destination = 'download/' + filename;
-        var source = this.news.url.replace('http://open.live.bbc.co.uk/mediaselector', '/mediaselector');
+        var source = news.url;
+        //var source = this.news.url.replace('http://open.live.bbc.co.uk/mediaselector', '/mediaselector');
 
         console.log(source, destination);
 
-        var theNews = this.news;
+        var theNews = news;
         var pro = fs.download(
             source,
             destination,
@@ -272,7 +272,7 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
 //            }
 //        );
 
-    }
+    };
 
 
     $scope.refresh = function(auto) {
@@ -284,14 +284,14 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
             function() {console.log('success'); },
             function() {console.log('error'); }
         );
-    }
+    };
 
     $scope.readFile = function() {
         fs.read("fuck.txt").then(
             function(e) {console.log('success');console.log(e); },
             function() {console.log('error'); }
         );
-    }
+    };
 
     $scope.isOnAir = function(news) {
         return (news.url === $scope.onAirUrl);

@@ -18,7 +18,7 @@
           <ion-list>
               <ion-item ng-repeat="news in newsContainer.news track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
 
-                      <div class="row" ng-click="play(news)">
+                      <div class="row" ng-click="download(news)">
                           <div class="col-center col-icon">
                               <img class="news-information-chanel {{news.class}} center-content" />
                           </div>
@@ -37,24 +37,15 @@
                               <div class="row news-information-row">
                                   <div class="col">
                                       <p>{{news.label}}</p>
+                                      <p> downloaded : {{news.downloaded}}</p>
+                                      <p> progress : {{news.progress}}</p>
                                   </div>
                               </div>
                           </div>
 
-                          <!--<button class="" ng-click="play('{{news.url}}')">-->
-                              <!--<i class="ion-music-note"></i>-->
-                          <!--</button>-->
-                          <!--<br>-->
 
-                          <!--<button class="" ng-click="download()">-->
-                              <!--<i class="ion-ios-arrow-thin-down" ></i>-->
-                          <!--</button>-->
-                          <!--<button class="" ng-click="downloaded()">-->
-                              <!--Downloaded-->
-                          <!--</button>-->
-                          <!--downloaded : {{news.downloaded}}-->
 
-                          <!--progress : {{news.progress}}-->
+
 
 
                           <!--<div class="col-center col-icon">-->
@@ -62,6 +53,11 @@
                                   <!--<i class="ion-radio-waves-play"></i>-->
                               <!--</span>-->
                           <!--</div>-->
+                          <div class="col-center col-icon">
+                              <span class=="center-content">
+                                  <i class="ion-ios-arrow-thin-down" ></i>
+                              </span>
+                          </div>
                       </div>
 
               </ion-item>
