@@ -18,7 +18,7 @@
           <ion-list>
               <ion-item ng-repeat="news in newsContainer.news track by $index" ng-class="{onAir: isOnAir(news)}" class="item ng-binding {{news.class}} news-item" >
 
-                      <div class="row" ng-click="download(news)">
+                      <div class="row" ng-click="play(news)">
                           <div class="col-center col-icon">
                               <img class="news-information-chanel {{news.class}} center-content" />
                           </div>
@@ -37,26 +37,24 @@
                               <div class="row news-information-row">
                                   <div class="col">
                                       <p>{{news.label}}</p>
-                                      <p> downloaded : {{news.downloaded}}</p>
-                                      <p> progress : {{news.progress}}</p>
+                                      <p ng-show="downloadStarted(news) && !news.downloaded"> progress : {{news.progress}} %</p>
                                   </div>
                               </div>
                           </div>
-
-
-
-
-
 
                           <!--<div class="col-center col-icon">-->
                               <!--<span class=="center-content">-->
                                   <!--<i class="ion-radio-waves-play"></i>-->
                               <!--</span>-->
                           <!--</div>-->
-                          <div class="col-center col-icon">
-                              <span class=="center-content">
-                                  <i class="ion-ios-arrow-thin-down" ></i>
-                              </span>
+
+                          <div class="col-center col-icon" ng-show="!news.downloaded">
+                              <button class=="center-content" ng-show="!downloadStarted(news)">
+                                  <i class="ion-arrow-down-c download-icon" ng-click="download(news); $event.stopPropagation()"></i>
+                              </button>
+                              <button class=="center-content" ng-show="downloadStarted(news)">
+                                  <i class="ion-close-round stop-download-icon" ng-click="stopDownload(news); $event.stopPropagation()"></i>
+                              </button>
                           </div>
                       </div>
 

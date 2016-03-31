@@ -5,7 +5,7 @@ app.run(function($ionicPlatform, TrackingCode) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+    // for form inputs
     //if(window.cordova && window.cordova.plugins.Keyboard) {
       //cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     //}
@@ -197,9 +197,17 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
 
 
 
-    $scope.downloaded = function() {
-        console.log(this.news);
-        this.news.downloaded = !(this.news.downloaded);
+    $scope.downloadStarted = function(news) {
+        return news.promiseDownload != null;
+    }
+
+    $scope.stopDownload = function (news) {
+
+        news.promiseDownload.abort();
+        news.promiseDownload = null;
+        news.progress = 0;
+        news.downloaded = false;
+
     };
 
     $scope.download = function (news) {
@@ -210,20 +218,20 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
         var directory = 'audioFiles';
         var destination = 'download/' + filename;
         var source = news.url;
-        //var source = this.news.url.replace('http://open.live.bbc.co.uk/mediaselector', '/mediaselector');
+        if (develop) {
+            source = this.news.url.replace('http://open.live.bbc.co.uk/mediaselector', '/mediaselector');
+        }
 
         console.log(source, destination);
 
         var theNews = news;
-        var pro = fs.download(
+        var promise = fs.download(
             source,
             destination,
             function(progressEvent) {
                 if (progressEvent.lengthComputable) {
-                    theNews.downloaded = true;
                     var percentComplete = progressEvent.loaded / progressEvent.total;
-                    console.log(percentComplete);
-                    theNews.progress = percentComplete * 100;
+                    theNews.progress = parseInt(percentComplete * 100);
                     $scope.$apply();
                 } else {
                     // Unable to compute progress information since the total size is unknown
@@ -231,10 +239,16 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
             }
         );
 
-        pro.then(
-            function() {console.log('success'); },
+        promise.then(
+            function(argument) {
+                theNews.localFile = destination;
+                theNews.downloaded = true;
+            },
             function() {console.log('error'); }
         );
+
+        news.promiseDownload = promise;
+
 //        var promise = fs.download(
 //            this.news.url,
 //            destination,
@@ -302,14 +316,21 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
     };
 
     $scope.play = function(news) {
+
         $scope.playerStatus = 'play';
         $scope.onAirUrl = news.url;
         if ($scope.player != null) {
             $scope.player.pause();
         }
-        $scope.player = ngAudio.load(news.url);
-        $scope.player.play();
-        analytics.trackEvent('Player', 'Play Remote', news.flow);
+        if (news.downloaded) {
+            fs.toURL(news.localFile).then(function (file) {
+                $scope.player = ngAudio.load(file);
+                $scope.player.play();
+            });
+        } else {
+            $scope.player = ngAudio.load(news.url);
+            $scope.player.play();
+        }
     };
 
 
@@ -331,7 +352,7 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
         $scope.onAirUrl = null;
         $scope.playerStatus = 'stop';
         if ($scope.player != null) {
-            $scope.player.pause();
+            $scope.player.stop();
         }
     };
 
@@ -346,14 +367,15 @@ app.controller('BBCCtrl',  function($scope, $timeout, $ionicPlatform, ngAudio, $
     $scope.forward = function() {
         if ($scope.player != null) {
             $scope.player.setCurrentTime(
-                Math.min($scope.player.currentTime + 30, $scope.player.duration)
+            Math.min($scope.player.currentTime + 30, $scope.player.duration)
             );
         }
     };
 
     $scope.canPlay = function() {
         if ($scope.player) {
-            return $scope.player.canPlay && ($scope.player.duration != 0);
+            return ($scope.player.duration != 0 && !isNaN($scope.player.duration));
+//            return $scope.player.canPlay && ($scope.player.duration != 0 && $scope.player.duration != '');
         }
     };
 

@@ -160,6 +160,7 @@ app.service('newsProvider', ['$timeout', '$http', 'x2js', '$q', 'store', 'appCon
                             class: localSource.replace(/ /g, ""),
                             flow: localRss.label,
                             downloaded: false,
+                            promiseDownload: null,
                             progress: 0
                         })
                 }
